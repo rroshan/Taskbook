@@ -13,8 +13,8 @@
 
 	<h2>Insert new tasklist</h2>
 	<form action="test" method="post">
-		Category: <input type="text" name="category" /> <br> <input
-			type="submit" value="OK" />
+		Category: <input type="text" name="category" required/> <br> 
+		<input type="submit" value="OK" />
 	</form>
 	<h2>Results</h2>
 

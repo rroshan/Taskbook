@@ -11,7 +11,7 @@
 <title>Update tasklist</title>
 </head>
 <body>
-	<h1>Update Tasklist</h1>
+	<h2>Update Tasklist</h2>
 	<%
 		Tasklist tasklist;
 		int tasklist_id = Integer.parseInt(request
@@ -25,8 +25,22 @@
 	<c:set var="tasklist" value="${tasklist}" />
 
 	<form action="testUpdate" method="post">
-		Category: <input type="text" name="category" value=${tasklist.taskName } /> <br>
-		<input type="hidden" name="tasklistId" value=${tasklist.tasklistID } /> 
+		Category: 
+		<input type="text" name="category" value=${tasklist.taskName } required/> <br>
+		<input type="hidden" name="tasklistId" value=${tasklist.tasklistID }/> 
+		<input type="submit" value="OK" />
+	</form>
+
+	<h2>New Task</h2>
+	<form action="testUpdate" method="post">
+		Name: <input type="text" name="title" required/> <br>
+		Scope: 
+		<select	name="scope">
+			<option value="private">private</option>
+			<option value="public">public</option>
+		</select> <br>
+		Due Date: <input type="date" name="due_date" required/> <br>
+		Due Time: <input type="time" name="due_time"/> <br> 
 		<input type="submit" value="OK" />
 	</form>
 </body>
