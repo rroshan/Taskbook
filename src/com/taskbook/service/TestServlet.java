@@ -1,8 +1,8 @@
 package com.taskbook.service;
 //testservlet - for test commit
 import java.io.IOException;
-import java.util.ArrayList;
-
+import java.sql.Timestamp;
+import java.util.Date;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,13 +33,7 @@ public class TestServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		ArrayList<Tasklist> arrTasklist;
-		TaskbookDAO dao = new TaskbookDAO();
-		arrTasklist = dao.viewTasklist();
-
-		request.setAttribute("tasklistArray", arrTasklist);
-		RequestDispatcher rd = getServletContext().getRequestDispatcher("/test.jsp");
-		rd.forward(request, response);
+		doPost(request, response);
 	}
 
 	/**
@@ -47,6 +41,23 @@ public class TestServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
+		TaskbookDAO dao = new TaskbookDAO();
+		
+		Tasklist taskList = new Tasklist();
+		String category = request.getParameter("category");
+		
+		Date dt = new Date();
+		
+		taskList.setOwner("ROSH01"); //hardcoded for now. Need to change based on user login
+		taskList.setTaskName(category);
+		taskList.setCreatedDate(new Timestamp(dt.getTime()));
+		taskList.setLastModifiedDate(new Timestamp(dt.getTime()));
+		
+		dao.insertTasklist(taskList);
+		
+		RequestDispatcher rd = getServletContext().getRequestDispatcher("/test.jsp");
+		rd.forward(request, response);
 	}
 
 }
