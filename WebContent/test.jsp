@@ -21,7 +21,7 @@
 	<%
 		ArrayList<Tasklist> arrTasklist;
 		TaskbookDAO dao = new TaskbookDAO();
-		arrTasklist = dao.viewTasklist();
+		arrTasklist = dao.viewAllTasklists();
 		
 		pageContext.setAttribute("tasklists", arrTasklist);
 	%>
@@ -37,10 +37,11 @@
 		<c:forEach items="${tasklists}" var="current">
 			<tr>
 				<td><c:out value="${current.tasklistID}" /></td>
-				<td><c:out value="${current.taskName}" /></td>
+				<td><a href="update.jsp?tasklistId=${current.tasklistID}"><c:out value="${current.taskName}" /></a></td>
 				<td><c:out value="${current.createdDate}" /></td>
 				<td><c:out value="${current.lastModifiedDate}" /></td>
 				<td><c:out value="${current.owner}" /></td>
+				<td><a href="testDelete?tasklistId=${current.tasklistID}">Delete</a></td>
 			</tr>
 		</c:forEach>
 	</table>

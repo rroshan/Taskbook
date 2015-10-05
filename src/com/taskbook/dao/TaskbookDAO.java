@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.taskbook.bo.*;
 
@@ -18,7 +19,7 @@ public class TaskbookDAO {
 
 	public TaskbookDAO() {	}
 
-	public ArrayList<Tasklist> viewTasklist() {
+	public ArrayList<Tasklist> viewAllTasklists() {
 
 		ArrayList<Tasklist> arrTasklist = new ArrayList<Tasklist>();
 		Tasklist taskList;
@@ -60,23 +61,109 @@ public class TaskbookDAO {
 		return arrTasklist;
 	}
 
+	public Tasklist viewTasklist(int tasklist_id) {
+		Tasklist taskList = null;
+		//getting database connection from connection pool
+		//connection handled by tomcat
+		conn = ConnectionFactory.getConnection();
+
+		try {
+			String sql = "select * from tasklist where tasklist_id=?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, tasklist_id);
+			set = pstmt.executeQuery();
+
+			while(set.next()){
+				//Retrieve by column name
+				String category = set.getString("category");
+				String owner = set.getString("owner");
+				Timestamp createdDate = set.getTimestamp("created_date");
+				Timestamp lastModifiedDate = set.getTimestamp("last_modified_date");
+
+				taskList = new Tasklist();
+				taskList.setOwner(owner);
+				taskList.setTasklistID(tasklist_id);
+				taskList.setTaskName(category);
+				taskList.setCreatedDate(createdDate);
+				taskList.setLastModifiedDate(lastModifiedDate);
+			}
+		} catch(SQLException sqlex) {
+			sqlex.printStackTrace();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			ConnectionFactory.closeResources(set, pstmt, conn);
+		}
+
+		return taskList;
+	}
+
 	public void insertTasklist(Tasklist taskList) {
 		//getting database connection from connection pool
 		//connection handled by tomcat
 		conn = ConnectionFactory.getConnection();
-		
+
 		try {
 			String sql = "insert into tasklist (category, created_date, last_modified_date, owner) values (?, ?, ?, ?)";
 			pstmt = conn.prepareStatement(sql);
-			
+
 			pstmt.setString(1, taskList.getTaskName());
 			pstmt.setTimestamp(2, taskList.getCreatedDate());
 			pstmt.setTimestamp(3, taskList.getLastModifiedDate());
 			pstmt.setString(4, taskList.getOwner());
-			
+
 			pstmt.executeUpdate();
-			
-			
+
+
+		} catch(SQLException sqlex) {
+			sqlex.printStackTrace();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			ConnectionFactory.closeResources(set, pstmt, conn);
+		}
+	}
+
+	public void updateTasklist(Tasklist tasklist) {
+		//getting database connection from connection pool
+		//connection handled by tomcat
+		conn = ConnectionFactory.getConnection();
+		Date dt = new Date();
+
+		try {
+			String sql = "update tasklist set category=?, last_modified_date=? where tasklist_id=?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, tasklist.getTaskName());
+			pstmt.setTimestamp(2, new Timestamp(dt.getTime()));
+			pstmt.setInt(3, tasklist.getTasklistID());
+
+			pstmt.executeUpdate();
+
+
+		} catch(SQLException sqlex) {
+			sqlex.printStackTrace();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			ConnectionFactory.closeResources(set, pstmt, conn);
+		}
+	}
+
+	public void deleteTasklist(int tasklist_id) {
+		//getting database connection from connection pool
+		//connection handled by tomcat
+		conn = ConnectionFactory.getConnection();
+		try {
+			String sql = "delete from tasklist where tasklist_id=?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, tasklist_id);
+
+			pstmt.executeUpdate();
+
+
 		} catch(SQLException sqlex) {
 			sqlex.printStackTrace();
 		} catch(Exception ex) {
