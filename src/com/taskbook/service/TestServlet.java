@@ -1,16 +1,13 @@
 package com.taskbook.service;
-//testservlet - for test commit
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.taskbook.bo.Tasklist;
 import com.taskbook.dao.*;
 import com.taskbook.dao.impl.TasklistDAOMySQLImpl;
@@ -58,8 +55,10 @@ public class TestServlet extends HttpServlet {
 		
 		dao.insertTasklist(taskList);
 		
-		RequestDispatcher rd = getServletContext().getRequestDispatcher("/test.jsp");
-		rd.forward(request, response);
+		/*RequestDispatcher rd = getServletContext().getRequestDispatcher("/test.jsp");
+		rd.forward(request, response);*/
+		
+		response.sendRedirect("test.jsp");
 	}
 
 }

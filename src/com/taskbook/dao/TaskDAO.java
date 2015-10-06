@@ -8,5 +8,11 @@ public interface TaskDAO {
 	
 	public ArrayList<Task> viewAllTasks(int tasklistId);
 	
-	public void insertTasklist(Task task, int tasklistId);
+	public Task viewTask(int taskId);
+	
+	public void insertTask(Task task, int tasklistId);
+	
+	public void deleteTask(int taskId);
+	
+	public void updateTask(Task task, int taskListId);
 }

@@ -39,7 +39,6 @@
 		<servlet-name>TestDeleteServlet</servlet-name>
 		<url-pattern>/testDelete</url-pattern>
 	</servlet-mapping>
-
 	<servlet>
 		<description></description>
 		<display-name>Task Test</display-name>
@@ -49,5 +48,27 @@
 	<servlet-mapping>
 		<servlet-name>TestTaskServlet</servlet-name>
 		<url-pattern>/testTask</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<description></description>
+		<display-name>Task Delete Test</display-name>
+		<servlet-name>TestTaskDeleteServlet</servlet-name>
+		<servlet-class>com.taskbook.service.TestTaskDeleteServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TestTaskDeleteServlet</servlet-name>
+		<url-pattern>/testTaskDelete</url-pattern>
+	</servlet-mapping>
+		<servlet>
+		<description></description>
+		<display-name>Task Update Test</display-name>
+		<servlet-name>TestTaskUpdateServlet</servlet-name>
+		<servlet-class>com.taskbook.service.TestTaskUpdateServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TestTaskUpdateServlet</servlet-name>
+		<url-pattern>/testTaskUpdate</url-pattern>
 	</servlet-mapping>
 </web-app>

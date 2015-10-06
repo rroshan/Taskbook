@@ -76,16 +76,19 @@
 		<c:forEach items="${tasks}" var="currentTask">
 			<tr>
 				<td><c:out value="${currentTask.taskId}" /></td>
-				<td><a href="taskUpdate.jsp?taskId=${currentTask.taskId}"><c:out value="${currentTask.title}" /></a></td>
+				<td><a href="updatetask.jsp?tasklistId=${tasklist.tasklistID }&taskId=${currentTask.taskId}"><c:out value="${currentTask.title}" /></a></td>
 				<td><c:out value="${currentTask.createdDate}" /></td>
 				<td><c:out value="${currentTask.lastModifiedDate}" /></td>
 				<td><c:out value="${currentTask.assignedUser}" /></td>
 				<td><c:out value="${currentTask.status}" /></td>
 				<td><c:out value="${currentTask.scope}" /></td>
 				<td><c:out value="${currentTask.dueDate}" /></td>
-				<td><a href="testDelete?taskId=${currentTask.taskId}">Delete</a></td>
+				<td><a href="testTaskDelete?tasklistId=${tasklist.tasklistID }&taskId=${currentTask.taskId}">Delete</a></td>
 			</tr>
 		</c:forEach>
 	</table>
+	
+	<br>
+	<a href="test.jsp">Go to Tasklists</a>
 </body>
 </html>

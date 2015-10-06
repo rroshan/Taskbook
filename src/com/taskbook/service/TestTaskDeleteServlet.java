@@ -8,20 +8,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.taskbook.dao.TasklistDAO;
-import com.taskbook.dao.impl.TasklistDAOMySQLImpl;
+
+import com.taskbook.dao.TaskDAO;
+import com.taskbook.dao.impl.TaskDAOMySQLImpl;
 
 /**
- * Servlet implementation class TestDeleteServlet
+ * Servlet implementation class TestTaskDeleteServlet
  */
-@WebServlet("/TestDeleteServlet")
-public class TestDeleteServlet extends HttpServlet {
+@WebServlet("/TestTaskDeleteServlet")
+public class TestTaskDeleteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public TestDeleteServlet() {
+    public TestTaskDeleteServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -39,15 +40,16 @@ public class TestDeleteServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		TasklistDAO dao = new TasklistDAOMySQLImpl();
-		int tasklist_id = Integer.parseInt(request.getParameter("tasklistId"));
 		
-		dao.deleteTasklist(tasklist_id);
+		int taskId = Integer.parseInt(request.getParameter("taskId"));
+		int tasklistId = Integer.parseInt(request.getParameter("tasklistId"));
 		
-		/*RequestDispatcher rd = getServletContext().getRequestDispatcher("/test.jsp");
+		TaskDAO dao = new TaskDAOMySQLImpl();
+		dao.deleteTask(taskId);
+		
+		/*RequestDispatcher rd = getServletContext().getRequestDispatcher("/update.jsp?tasklistId="+tasklistId);
 		rd.forward(request, response);*/
 		
-		response.sendRedirect("test.jsp");
+		response.sendRedirect("update.jsp?tasklistId="+tasklistId);
 	}
-
 }

@@ -52,8 +52,10 @@ public class TestUpdateServlet extends HttpServlet {
 		
 		dao.updateTasklist(tasklist);
 		
-		RequestDispatcher rd = getServletContext().getRequestDispatcher("/test.jsp");
-		rd.forward(request, response);
+		/*RequestDispatcher rd = getServletContext().getRequestDispatcher("/test.jsp");
+		rd.forward(request, response);*/
+		
+		response.sendRedirect("test.jsp");
 	}
 
 }
