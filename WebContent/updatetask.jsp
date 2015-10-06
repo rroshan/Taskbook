@@ -10,6 +10,58 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<script type="text/javascript" src="jquery.js"></script>
+
+<style type="text/css">
+	div{
+		padding:8px;
+	}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    var counter = 2;
+		
+    $("#addButton").click(function () {
+				
+	if(counter>30){
+            alert("Only 30 subtasks allow");
+            return false;
+	}   
+		
+	var newTextBoxDiv = $(document.createElement('div'))
+	     .attr("id", 'TextBoxDiv' + counter);
+                
+	newTextBoxDiv.after().html('<input type="checkbox" id="csubtask'+ counter + '" ' + 'name="csubtask" />' +
+	      '<input type="text" name="subtask' + counter + 
+	      '" id="subtask' + counter + '" value="" /> <select name="status"' + counter + ' form="subtaskform"> <option value="N">Pending</option> <option value="Y">Completed</option></select>');
+            
+	newTextBoxDiv.appendTo("#TextBoxesGroup");
+
+				
+	counter++;
+     });
+
+     $("#removeButton").click(function () {
+	if(counter==1){
+          alert("No more subtasks to remove");
+          return false;
+       }
+	
+	var checkedId = $('input[name="csubtask"]:checked').map(function() {
+	    return this.id.substr(8);
+	}).get();
+	
+	console.log(checkedId)
+	
+	for (var i=0; i < checkedId.length; i++) {
+		$("#TextBoxDiv" + checkedId[i]).remove();
+		counter--;
+	}
+			
+     });
+  });
+</script>
 <title>Update Task</title>
 </head>
 <body>
@@ -51,6 +103,22 @@
 		<input type="hidden" name="tasklistId" value="${tasklistId}" /> 
 		<input type="submit" value="OK" />
 	</form>
+	
+	<h2>Subtasks</h2>
+	<form action="testSubTask" method="post" id="subtaskform">
+	<div id='TextBoxesGroup'>
+		<div id="TextBoxDiv1">
+			<input type="checkbox" name="csubtask" id="csubtask1" /> <input type='textbox' id='subtask1' name = "subtask1" />
+			<select name="status1" form="subtaskform">
+				<option value="N">Pending</option>
+  				<option value="Y">Completed</option>
+			</select>
+		</div>
+	</div>
+	<input type='button' value='Add subtask' id='addButton'>
+	<input type='button' value='Remove subtask' id='removeButton'>
+	<input type="submit" value="OK" />
+	</form> <br>
 	
 	<a href="update.jsp?tasklistId=${tasklistId}">Go to tasks</a>
 </body>
