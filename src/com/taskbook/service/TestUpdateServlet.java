@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.taskbook.bo.Tasklist;
-import com.taskbook.dao.TaskbookDAO;
+import com.taskbook.dao.TasklistDAO;
+import com.taskbook.dao.impl.TasklistDAOMySQLImpl;
 
 /**
  * Servlet implementation class TestUpdateServlet
@@ -41,7 +42,7 @@ public class TestUpdateServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		TaskbookDAO dao = new TaskbookDAO();
+		TasklistDAO dao = new TasklistDAOMySQLImpl();
 		int tasklist_id = Integer.parseInt(request.getParameter("tasklistId"));
 		String category = request.getParameter("category");
 		

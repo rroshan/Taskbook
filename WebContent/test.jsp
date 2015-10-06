@@ -2,7 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page import="java.sql.Timestamp"%>
 <%@ page import="java.util.ArrayList"%>
-<%@ page import="com.taskbook.dao.TaskbookDAO"%>
+<%@ page import="com.taskbook.dao.TasklistDAO"%>
+<%@ page import="com.taskbook.dao.impl.TasklistDAOMySQLImpl"%>
 <%@ page import="com.taskbook.bo.Tasklist"%>
 
 <html>
@@ -16,11 +17,11 @@
 		Category: <input type="text" name="category" required/> <br> 
 		<input type="submit" value="OK" />
 	</form>
-	<h2>Results</h2>
+	<h2>Tasklists</h2>
 
 	<%
 		ArrayList<Tasklist> arrTasklist;
-		TaskbookDAO dao = new TaskbookDAO();
+		TasklistDAO dao = new TasklistDAOMySQLImpl();
 		arrTasklist = dao.viewAllTasklists();
 		
 		pageContext.setAttribute("tasklists", arrTasklist);

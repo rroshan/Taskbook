@@ -1,5 +1,12 @@
 package com.taskbook.dao;
 
-public interface TaskDAO {
+import java.util.ArrayList;
 
+import com.taskbook.bo.Task;
+
+public interface TaskDAO {
+	
+	public ArrayList<Task> viewAllTasks(int tasklistId);
+	
+	public void insertTasklist(Task task, int tasklistId);
 }

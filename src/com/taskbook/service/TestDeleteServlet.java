@@ -8,8 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.taskbook.dao.TaskbookDAO;
+import com.taskbook.dao.TasklistDAO;
+import com.taskbook.dao.impl.TasklistDAOMySQLImpl;
 
 /**
  * Servlet implementation class TestDeleteServlet
@@ -39,7 +39,7 @@ public class TestDeleteServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		TaskbookDAO dao = new TaskbookDAO();
+		TasklistDAO dao = new TasklistDAOMySQLImpl();
 		int tasklist_id = Integer.parseInt(request.getParameter("tasklistId"));
 		
 		dao.deleteTasklist(tasklist_id);

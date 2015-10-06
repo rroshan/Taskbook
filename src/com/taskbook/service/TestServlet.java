@@ -3,6 +3,7 @@ package com.taskbook.service;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.taskbook.bo.Tasklist;
 import com.taskbook.dao.*;
+import com.taskbook.dao.impl.TasklistDAOMySQLImpl;
 
 /**
  * Servlet implementation class TestServlet
@@ -42,7 +44,7 @@ public class TestServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		TaskbookDAO dao = new TaskbookDAO();
+		TasklistDAO dao = new TasklistDAOMySQLImpl();
 		
 		Tasklist taskList = new Tasklist();
 		String category = request.getParameter("category");
