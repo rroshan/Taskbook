@@ -38,8 +38,6 @@ public class TaskDAOMySQLImpl implements TaskDAO {
 			pstmt.setTimestamp(9, task.getDueDate());
 
 			pstmt.executeUpdate();
-			System.out.println("Hello2");
-
 		} catch(SQLException sqlex) {
 			sqlex.printStackTrace();
 		} catch(Exception ex) {

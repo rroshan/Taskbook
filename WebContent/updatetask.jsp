@@ -1,10 +1,16 @@
+<%@page import="com.taskbook.bo.Subtask"%>
+<%@page import="com.taskbook.dao.SubtaskDAO"%>
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
     pageEncoding="US-ASCII"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page import="com.taskbook.bo.Task"%>
 <%@ page import="com.taskbook.dao.TaskDAO"%>
+<%@ page import="com.taskbook.dao.SubtaskDAO"%>
 <%@ page import="com.taskbook.dao.impl.*"%>
+<%@ page import="com.taskbook.bo.Subtask"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Iterator"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -19,9 +25,21 @@
 </style>
 <script type="text/javascript">
 $(document).ready(function(){
-
-    var counter = 2;
-		
+	
+    var max = -1;
+    
+	var maxCount =$('.classsubtask').map(function() {
+	    return this.id.substr(7);
+	}).get();
+	
+	for (var i=0; i < maxCount.length; i++) {
+		if(maxCount[i] > max) {
+			max = maxCount[i];
+		}
+	}
+	
+	var counter = parseInt(max) + 1;
+	
     $("#addButton").click(function () {
 				
 	if(counter>30){
@@ -34,7 +52,7 @@ $(document).ready(function(){
                 
 	newTextBoxDiv.after().html('<input type="checkbox" id="csubtask'+ counter + '" ' + 'name="csubtask" />' +
 	      '<input type="text" name="subtask' + counter + 
-	      '" id="subtask' + counter + '" value="" /> <select name="status"' + counter + ' form="subtaskform"> <option value="N">Pending</option> <option value="Y">Completed</option></select>');
+	      '" id="subtask' + counter + '" class="classsubtask" value="" /> <select name="status"' + counter + ' form="subtaskform"> <option value="N">Pending</option> <option value="Y">Completed</option></select>');
             
 	newTextBoxDiv.appendTo("#TextBoxesGroup");
 
@@ -105,19 +123,57 @@ $(document).ready(function(){
 	</form>
 	
 	<h2>Subtasks</h2>
-	<form action="testSubTask" method="post" id="subtaskform">
-	<div id='TextBoxesGroup'>
-		<div id="TextBoxDiv1">
-			<input type="checkbox" name="csubtask" id="csubtask1" /> <input type='textbox' id='subtask1' name = "subtask1" />
-			<select name="status1" form="subtaskform">
-				<option value="N">Pending</option>
-  				<option value="Y">Completed</option>
-			</select>
+	<%
+		ArrayList<Subtask> arrSubtask;
+		SubtaskDAO subtaskDAO = new SubtaskDAOMySQLImpl();
+		arrSubtask = subtaskDAO.viewAllSubtasks(taskId);
+		
+		pageContext.setAttribute("subtasks", arrSubtask);
+		
+		int countId = 1;
+	
+	%>
+	
+	<form action="testSubtask" method="post" id="subtaskform">
+		<div id='TextBoxesGroup'>
+		
+		<%
+			Subtask s; 
+			Iterator<Subtask> it = arrSubtask.iterator();
+			while(it.hasNext())
+			{
+				s = it.next();
+		%>
+				<div id="TextBoxDiv<%=countId%>">
+					<input type="checkbox" name="csubtask" id="csubtask<%=countId%>" /> <input type='textbox' id='subtask<%=countId%>' name = "subtask<%=countId%>" class="classsubtask" value="<%=s.getDescription()%>"/>
+						<select name="status<%=countId%>" form="subtaskform">
+						<%
+							if(s.getStatus().equalsIgnoreCase("N"))
+							{
+						%>
+							<option value="N" selected="selected">Pending</option>
+  							<option value="Y">Completed</option>
+  						<%
+							}
+							else
+							{
+  						%>
+  							<option value="N">Pending</option>
+	  						<option value="Y" selected="selected">Completed</option>
+	  					<%
+							}
+	  					%>
+						</select>
+				</div>
+				
+		<%
+				countId++;
+			}
+		%>
 		</div>
-	</div>
-	<input type='button' value='Add subtask' id='addButton'>
-	<input type='button' value='Remove subtask' id='removeButton'>
-	<input type="submit" value="OK" />
+		<input type='button' value='Add subtask' id='addButton'>
+		<input type='button' value='Remove subtask' id='removeButton'>
+		<input type="submit" value="OK" />
 	</form> <br>
 	
 	<a href="update.jsp?tasklistId=${tasklistId}">Go to tasks</a>
