@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import com.taskbook.bo.Subtask;
 import com.taskbook.dao.ConnectionFactory;
 import com.taskbook.dao.SubtaskDAO;
@@ -23,7 +25,7 @@ public class SubtaskDAOMySQLImpl implements SubtaskDAO {
 		ArrayList<Subtask> arrSubtask = new ArrayList<Subtask>();
 
 		try {
-			String sql = "select * from subtasks where task_id=?";
+			String sql = "select * from subtasks where task_id=? order by sno";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setInt(1, taskId);
@@ -56,8 +58,42 @@ public class SubtaskDAOMySQLImpl implements SubtaskDAO {
 	}
 
 	@Override
-	public void saveSubtasks(Subtask[] subtasks) {
+	public void saveSubtasks(Map<Integer, Subtask> map, int taskId) {
 		// TODO Auto-generated method stub
+		
+		//delete all subtasks
+		conn = ConnectionFactory.getConnection();
+		try {
+			String sql = "delete from subtasks where task_id=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, taskId);
+			pstmt.executeUpdate();
+			
+			System.out.println(map.size());
+			
+			Subtask s = null;
+			Map.Entry pair;
+			Iterator it = map.entrySet().iterator();
+			sql = "insert into subtasks values (?,?,?,?)";
+			while(it.hasNext()) {
+				pstmt = conn.prepareStatement(sql);
+				pair = (Map.Entry)it.next();
+				
+				s = (Subtask) pair.getValue();
+				pstmt.setInt(1, taskId);
+				pstmt.setInt(2, s.getsNo());
+				pstmt.setString(3, s.getStatus());
+				pstmt.setString(4, s.getDescription());
+				pstmt.executeUpdate();
+			}
+		} catch(SQLException sqlex) {
+			sqlex.printStackTrace();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			ConnectionFactory.closeResources(set, pstmt, conn);
+		}
+		
 		
 	}
 

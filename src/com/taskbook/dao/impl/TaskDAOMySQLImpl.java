@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import com.taskbook.bo.Task;
 import com.taskbook.dao.ConnectionFactory;
 import com.taskbook.dao.TaskDAO;
@@ -127,7 +126,6 @@ public class TaskDAOMySQLImpl implements TaskDAO {
 		//getting database connection from connection pool
 		//connection handled by tomcat
 		conn = ConnectionFactory.getConnection();
-		Date dt = new Date();
 
 		try {
 			String sql = "update tasks set title=?, scope=?, due_date=?, status=?, last_modified_date=? where tasklist_id=? and task_id=?";

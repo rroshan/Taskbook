@@ -32,9 +32,16 @@ $(document).ready(function(){
 	    return this.id.substr(7);
 	}).get();
 	
-	for (var i=0; i < maxCount.length; i++) {
-		if(maxCount[i] > max) {
-			max = maxCount[i];
+	if(maxCount.length == 0)
+	{
+		max = 0;	
+	}
+	else
+	{
+		for (var i=0; i < maxCount.length; i++) {
+			if(maxCount[i] > max) {
+				max = maxCount[i];
+			}
 		}
 	}
 	
@@ -52,7 +59,7 @@ $(document).ready(function(){
                 
 	newTextBoxDiv.after().html('<input type="checkbox" id="csubtask'+ counter + '" ' + 'name="csubtask" />' +
 	      '<input type="text" name="subtask' + counter + 
-	      '" id="subtask' + counter + '" class="classsubtask" value="" /> <select name="status"' + counter + ' form="subtaskform"> <option value="N">Pending</option> <option value="Y">Completed</option></select>');
+	      '" id="subtask' + counter + '" class="classsubtask" value="" /> <select name="status' + counter + '"' + ' form="subtaskform"> <option value="N">Pending</option> <option value="Y">Completed</option></select>');
             
 	newTextBoxDiv.appendTo("#TextBoxesGroup");
 
@@ -135,6 +142,8 @@ $(document).ready(function(){
 	%>
 	
 	<form action="testSubtask" method="post" id="subtaskform">
+		<input type="hidden" name="taskId" value="${task.taskId }" />
+		<input type="hidden" name="tasklistId" value="${tasklistId}" />  
 		<div id='TextBoxesGroup'>
 		
 		<%
@@ -175,6 +184,9 @@ $(document).ready(function(){
 		<input type='button' value='Remove subtask' id='removeButton'>
 		<input type="submit" value="OK" />
 	</form> <br>
+	
+	<h3>Comments</h3>
+	
 	
 	<a href="update.jsp?tasklistId=${tasklistId}">Go to tasks</a>
 </body>
