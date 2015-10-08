@@ -14,6 +14,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Update tasklist</title>
+<link rel="stylesheet" type="text/css" href="cerulean.css">
 </head>
 <body>
 	<h2>Update Tasklist</h2>
@@ -31,7 +32,7 @@
 
 	<form action="testUpdate" method="post">
 		Category: 
-		<input type="text" name="category" value="${tasklist.taskName }" required/> <br>
+		<input type="text" name="category" value="${tasklist.taskName }" required/> 
 		<input type="hidden" name="tasklistId" value="${tasklist.tasklistID }" /> 
 		<input type="submit" value="OK" />
 	</form>
@@ -57,7 +58,7 @@
 		arrTask = taskDAO.viewAllTasks(tasklist_id);
 		
 		pageContext.setAttribute("tasks", arrTask);
-	%>
+		%>
 
 
 	<h2>Tasks</h2>

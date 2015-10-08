@@ -9,13 +9,14 @@
 <html>
 <head>
 <title>DB Test</title>
+<link rel="stylesheet" type="text/css" href="cerulean.css">
 </head>
 <body>
 
 	<h2>Insert new tasklist</h2>
 	<form action="test" method="post">
-		Category: <input type="text" name="category" required/> <br> 
-		<input type="submit" value="OK" />
+		Category: <input type="text" name="category" required/> 
+		<input type="submit" value="OK" class="btn btn-primary"/>
 	</form>
 	<h2>Tasklists</h2>
 

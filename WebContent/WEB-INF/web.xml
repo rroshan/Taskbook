@@ -82,4 +82,16 @@
 		<servlet-name>TestSubtaskServlet</servlet-name>
 		<url-pattern>/testSubtask</url-pattern>
 	</servlet-mapping>
+	
+		<servlet>
+		<description></description>
+		<display-name>Task Comment</display-name>
+		<servlet-name>TestCommentsServlet</servlet-name>
+		<servlet-class>com.taskbook.service.TestCommentsServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TestCommentsServlet</servlet-name>
+		<url-pattern>/testComments</url-pattern>
+	</servlet-mapping>
 </web-app>

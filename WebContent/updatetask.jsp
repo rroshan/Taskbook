@@ -1,3 +1,4 @@
+<%@page import="com.taskbook.dao.CommentsDAO"%>
 <%@page import="com.taskbook.bo.Subtask"%>
 <%@page import="com.taskbook.dao.SubtaskDAO"%>
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
@@ -5,8 +6,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page import="com.taskbook.bo.Task"%>
+<%@ page import="com.taskbook.bo.Comment"%>
 <%@ page import="com.taskbook.dao.TaskDAO"%>
 <%@ page import="com.taskbook.dao.SubtaskDAO"%>
+<%@ page import="com.taskbook.dao.CommentsDAO"%>
+<%@ page import="com.taskbook.dao.impl.CommentsDAOMySQLImpl"%>
 <%@ page import="com.taskbook.dao.impl.*"%>
 <%@ page import="com.taskbook.bo.Subtask"%>
 <%@ page import="java.util.ArrayList"%>
@@ -16,6 +20,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<link rel="stylesheet" type="text/css" href="cerulean.css">
 <script type="text/javascript" src="jquery.js"></script>
 
 <style type="text/css">
@@ -24,6 +29,23 @@
 	}
 </style>
 <script type="text/javascript">
+
+function displayComment(json) {
+	var count = 1;
+	$("#comments-group").empty()
+	        .append("<h3>Comments</h3>");
+	
+	$.each(json, function(i, commentObject) {
+				var newCommentDiv = $(document.createElement('div')).attr("id", 'CommentDiv' + count);
+				newCommentDiv.after().html(commentObject.userId+'<br> <textarea rows="4" cols="50" readonly>'+commentObject.comment+'</textarea> <br>'+commentObject.commentTime+'<br><br>');
+				newCommentDiv.appendTo("#comments-group");
+				
+				count++;
+		    });
+	
+	$("#commentbox").val('');
+}
+
 $(document).ready(function(){
 	
     var max = -1;
@@ -84,6 +106,24 @@ $(document).ready(function(){
 		counter--;
 	}
 			
+     });
+     
+     $("#commentbutton").click(function(event) {
+    	 var commentText = $("#commentbox").val();
+    	 var taskId = $("#commenttaskId").val();
+    	 
+    	 if(commentText === "") {
+    		 alert("Comment cannot be null");
+    	 }
+    	 
+    	 //ajax post query
+    	 $.post('testComments', {"commentText":commentText, "taskId":taskId},
+    			 function(resp) {
+    		 		displayComment(resp);
+    	 })
+    	 .fail(function() {
+    			alert("Failed to insert comment");
+    	 });
      });
   });
 </script>
@@ -185,8 +225,36 @@ $(document).ready(function(){
 		<input type="submit" value="OK" />
 	</form> <br>
 	
-	<h3>Comments</h3>
+	<%
+		ArrayList<Comment> arrComments;
+		CommentsDAO commentsDAO = new CommentsDAOMySQLImpl();
+		arrComments = commentsDAO.viewAllComments(taskId);
+		
+		pageContext.setAttribute("comments", arrComments);
+	%>
 	
+	<div id='comments-group'>
+	<h3>Comments</h3>
+		<%
+			Comment comment; 
+			Iterator<Comment> commentsIterator = arrComments.iterator();
+			while(commentsIterator.hasNext())
+			{
+				comment = commentsIterator.next();
+		%>
+				<%=comment.getUserId() %> <br>
+				<textarea rows="4" cols="50" readonly><%=comment.getComment() %></textarea> <br>
+				<%=comment.getCommentTime() %> <br><br>
+		<%
+			}
+		%>
+	
+	</div>
+	
+	<textarea rows="4" cols="50" name="commentbox" id="commentbox">
+	</textarea> <br>
+	<input type="hidden" name="commenttaskId" id="commenttaskId" value="${task.taskId }" />  
+	<input type="submit" value="Comment" id="commentbutton"/>
 	
 	<a href="update.jsp?tasklistId=${tasklistId}">Go to tasks</a>
 </body>
