@@ -37,7 +37,8 @@ function displayComment(json) {
 	
 	$.each(json, function(i, commentObject) {
 				var newCommentDiv = $(document.createElement('div')).attr("id", 'CommentDiv' + count);
-				newCommentDiv.after().html(commentObject.userId+'<br> <textarea rows="4" cols="50" readonly>'+commentObject.comment+'</textarea> <br>'+commentObject.commentTime+'<br><br>');
+				console.log(commentObject.userId);
+				newCommentDiv.after().html(commentObject.userId+' <br> <textarea rows="4" cols="50" readonly>'+commentObject.comment+'</textarea> <input type="hidden" name="commentId'+count+'" id="commentId'+count+'" value="'+commentObject.commentId + '" /> <button id="delete'+count+'" name="delete'+count+'" class="deleteCommentButton">Delete</button> <br>'+commentObject.commentTime+'<br><br>');
 				newCommentDiv.appendTo("#comments-group");
 				
 				count++;
@@ -117,7 +118,23 @@ $(document).ready(function(){
     	 }
     	 
     	 //ajax post query
-    	 $.post('testComments', {"commentText":commentText, "taskId":taskId},
+    	 $.post('testComments', {"commentText":commentText, "taskId":taskId, "operation":"insert"},
+    			 function(resp) {
+    		 		displayComment(resp);
+    	 })
+    	 .fail(function() {
+    			alert("Failed to insert comment");
+    	 });
+     });
+     
+     $('.deleteCommentButton').click(function() {
+    	 var buttonId = this.id;
+    	 var suffix = buttonId.substr(6);
+    	 var commentId = $("#commentId"+suffix).val();
+    	 var taskId = $("#commenttaskId").val();
+    	 
+    	 //ajax post query
+    	 $.post('testComments', {"commentId":commentId, "taskId":taskId, "operation":"delete"},
     			 function(resp) {
     		 		displayComment(resp);
     	 })
@@ -237,15 +254,21 @@ $(document).ready(function(){
 	<h3>Comments</h3>
 		<%
 			Comment comment; 
+			int commentCount = 1;
 			Iterator<Comment> commentsIterator = arrComments.iterator();
 			while(commentsIterator.hasNext())
 			{
 				comment = commentsIterator.next();
 		%>
+				<div id="CommentDiv<%=commentCount%>">
 				<%=comment.getUserId() %> <br>
-				<textarea rows="4" cols="50" readonly><%=comment.getComment() %></textarea> <br>
+				<textarea rows="4" cols="50" readonly><%=comment.getComment() %></textarea>
+				<input type="hidden" name="commentId<%=commentCount %>" id="commentId<%=commentCount %>" value="<%=comment.getCommentId() %>" />  
+				<button id="delete<%=commentCount %>" name="delete<%=commentCount%>" class="deleteCommentButton">Delete</button> <br>
 				<%=comment.getCommentTime() %> <br><br>
+				</div>
 		<%
+				commentCount++;
 			}
 		%>
 	

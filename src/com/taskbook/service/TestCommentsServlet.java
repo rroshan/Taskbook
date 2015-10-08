@@ -44,26 +44,37 @@ public class TestCommentsServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		ArrayList<Comment> arrComments;
+		int taskId;
 		
 		Date today = new Date();
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		
-		int taskId = Integer.parseInt(request.getParameter("taskId"));
-		String commentText = request.getParameter("commentText");
-
-		Comment comment = new Comment();
-		comment.setComment(commentText);
-		comment.setUserId("ROSH01"); //hardcoded for now
-		
-		java.sql.Timestamp commentTime = new java.sql.Timestamp(today.getTime());
-		
-		comment.setCommentTime(commentTime);
-		
+		String operation = request.getParameter("operation");
 		CommentsDAO dao = new CommentsDAOMySQLImpl();
-		dao.insertComment(comment, taskId);
+		taskId = Integer.parseInt(request.getParameter("taskId"));
 		
+		if(operation.equalsIgnoreCase("insert")) {
+			
+			String commentText = request.getParameter("commentText");
+
+			Comment comment = new Comment();
+			comment.setComment(commentText);
+			comment.setUserId("ROSH01"); //hardcoded for now
+			
+			java.sql.Timestamp commentTime = new java.sql.Timestamp(today.getTime());
+			
+			comment.setCommentTime(commentTime);
+			
+			dao.insertComment(comment, taskId);
+
+		}
+		else if(operation.equalsIgnoreCase("delete")) {
+			int commentId = Integer.parseInt(request.getParameter("commentId"));
+			
+			dao.deleteComment(commentId);
+		}
 		
 		arrComments = dao.viewAllComments(taskId);
 		
