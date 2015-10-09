@@ -57,7 +57,6 @@ public class TestSubtaskServlet extends HttpServlet {
 			
 			if(param.toLowerCase().contains("subtask")) 
 			{
-				System.out.println("subtask"+param.substring(7));
 				i = Integer.parseInt(param.substring(7));
 				s = map.get(i);
 				
@@ -71,7 +70,6 @@ public class TestSubtaskServlet extends HttpServlet {
 			} 
 			else if(param.toLowerCase().contains("status")) 
 			{
-				System.out.println("Status"+param.substring(6));
 				i = Integer.parseInt(param.substring(6));
 				s = map.get(i);
 				

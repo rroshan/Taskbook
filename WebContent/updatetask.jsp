@@ -47,6 +47,8 @@ div {
 </style>
 <script type="text/javascript">
 
+var counter;
+
 function displayComment(json) {
 	var count = 1;
 	$("#comments-group").empty()
@@ -64,8 +66,8 @@ function displayComment(json) {
 	
 	$("#commentbox").val('');
 }
-$(document).ready(function(){
-	
+
+$(document).ready(function() {
     var max = -1;
     
 	var maxCount =$('.classsubtask').map(function() {
@@ -85,45 +87,44 @@ $(document).ready(function(){
 		}
 	}
 	
-	var counter = parseInt(max) + 1;
+	counter = parseInt(max) + 1;
+	});
 	
-    $("#addButton").click(function () {
-				
-	if(counter>30){
+	function addSubtask() {
+		if(counter>30){
             alert("Only 30 subtasks allow");
             return false;
-	}   
+		}   
 		
-	var newTextBoxDiv = $(document.createElement('div'))
-	     .attr("id", 'TextBoxDiv' + counter);
+		var newTextBoxDiv = $(document.createElement('div'))
+	     	.attr("id", 'TextBoxDiv' + counter);
                 
-	newTextBoxDiv.after().html('<input type="checkbox" id="csubtask'+ counter + '" ' + 'name="csubtask" />' +
-	      '<input type="text" name="subtask' + counter + 
-	      '" id="subtask' + counter + '" class="classsubtask" value="" required/> <select name="status' + counter + '"' + ' form="subtaskform"> <option value="N">Pending</option> <option value="Y">Completed</option></select>');
+		newTextBoxDiv.after().html('<input type="checkbox" id="csubtask'+ counter + '" ' + 'name="csubtask" />' +
+	      	'<input type="text" name="subtask' + counter + 
+	      	'" id="subtask' + counter + '" class="classsubtask" value="" required/> <select name="status' + counter + '"' + ' form="subtaskform"> <option value="N">Pending</option> <option value="Y">Completed</option></select>');
             
-	newTextBoxDiv.appendTo("#TextBoxesGroup");
+		newTextBoxDiv.appendTo("#TextBoxesGroup");
 				
-	counter++;
-     });
-     $("#removeButton").click(function () {
-	if(counter==1){
-          alert("No more subtasks to remove");
-          return false;
-       }
-	
-	var checkedId = $('input[name="csubtask"]:checked').map(function() {
-	    return this.id.substr(8);
-	}).get();
-	
-	console.log(checkedId)
-	
-	for (var i=0; i < checkedId.length; i++) {
-		$("#TextBoxDiv" + checkedId[i]).remove();
-		counter--;
+		counter++;	
 	}
-			
-     });
-  });
+	
+	function removeSubtask() {
+		if(counter==1){
+	          alert("No more subtasks to remove");
+	          return false;
+	       }
+		
+		var checkedId = $('input[name="csubtask"]:checked').map(function() {
+		    return this.id.substr(8);
+		}).get();
+		
+		console.log(checkedId)
+		
+		for (var i=0; i < checkedId.length; i++) {
+			$("#TextBoxDiv" + checkedId[i]).remove();
+			counter--;
+		}	
+	}
 
 function newComment() {
 	 var commentText = $("#commentbox").val();
@@ -312,9 +313,8 @@ function deleteComment(button) {
 			}
 		%>
 		</div>
-		<input type='button' value='Add subtask' id='addButton'
-			class='btn btn-success'> <input type='button'
-			value='Remove subtask' id='removeButton' class='btn btn-danger'>
+		<input type='button' value='Add subtask' id='addButton' class='btn btn-success' onclick="addSubtask()"> 
+		<input type='button' value='Remove subtask' id='removeButton' class='btn btn-danger' onclick="removeSubtask()">
 		<input type="submit" value="Save" class='btn btn-primary' />
 	</form>
 	<br>
