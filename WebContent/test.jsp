@@ -7,45 +7,66 @@
 <%@ page import="com.taskbook.bo.Tasklist"%>
 
 <html>
+
 <head>
-<title>DB Test</title>
-<link rel="stylesheet" type="text/css" href="cerulean.css">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="Tasklist">
+<meta name="author" content="OOAD">
+<link rel="icon" href="../../favicon.ico">
+
+<title>Taskbook</title>
+
+<!-- Bootstrap core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<style>
+body.padding2 {
+	padding-left: 1cm;
+}
+</style>
 </head>
-<body>
 
-	<h2>Insert new tasklist</h2>
+<body class="padding2">
+
+	<h2>Create a new Tasklist</h2>
 	<form action="test" method="post">
-		Category: <input type="text" name="category" required/> 
-		<input type="submit" value="OK" class="btn btn-primary"/>
+		Category: <input type="text" name="category" required /> <input
+			type="submit" value="OK" class="btn btn-primary" />
 	</form>
-	<h2>Tasklists</h2>
 
-	<%
-		ArrayList<Tasklist> arrTasklist;
-		TasklistDAO dao = new TasklistDAOMySQLImpl();
-		arrTasklist = dao.viewAllTasklists();
-		
-		pageContext.setAttribute("tasklists", arrTasklist);
-	%>
+	<% ArrayList<Tasklist> arrTasklist; TasklistDAO dao = new TasklistDAOMySQLImpl(); arrTasklist = dao.viewAllTasklists(); pageContext.setAttribute("tasklists", arrTasklist); %>
 
-	<table border="1">
-		<tr>
-			<th>Tasklist ID</th>
-			<th>Category</th>
-			<th>Created Date</th>
-			<th>Last Modified Date</th>
-			<th>Owner</th>
-		</tr>
-		<c:forEach items="${tasklists}" var="current">
-			<tr>
-				<td><c:out value="${current.tasklistID}" /></td>
-				<td><a href="update.jsp?tasklistId=${current.tasklistID}"><c:out value="${current.taskName}" /></a></td>
-				<td><c:out value="${current.createdDate}" /></td>
-				<td><c:out value="${current.lastModifiedDate}" /></td>
-				<td><c:out value="${current.owner}" /></td>
-				<td><a href="testDelete?tasklistId=${current.tasklistID}">Delete</a></td>
-			</tr>
-		</c:forEach>
-	</table>
+	<div class="col-lg-12">
+		<div class="page-header">
+			<h1 id="tasklist">Tasklists</h1>
+		</div>
+
+		<div class="bs-component">
+			<table class="table table-striped table-hover ">
+				<tr>
+					<th>Category</th>
+					<th>Last Modified Date</th>
+				</tr>
+				<c:forEach items="${tasklists}" var="current">
+					<tr class="active">
+						<td><a href="update.jsp?tasklistId=${current.tasklistID}">
+								<c:out value="${current.taskName}" />
+						</a></td>
+						<td><c:out value="${current.lastModifiedDate}" /></td>
+						<td><a href="testDelete?tasklistId=${current.tasklistID}">Delete</a>
+						</td>
+					</tr>
+				</c:forEach>
+			</table>
+			<div id="source-button" class="btn btn-primary btn-xs"
+				style="display: none;">&lt; &gt;</div>
+		</div>
+		<!-- /example -->
+	</div>
+
+	<script src="js/bootstrap.min.js"></script>
 </body>
+
 </html>
