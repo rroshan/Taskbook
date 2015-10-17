@@ -14,6 +14,8 @@ public class Constants {
 	   
 	   public final static Constants INSTANCE = new Constants();
 	   
+	   public static final String maybe="maybe";	 
+	   
 	   private Constants() {
 		         // Exists only to defeat instantiation.
 	   }
