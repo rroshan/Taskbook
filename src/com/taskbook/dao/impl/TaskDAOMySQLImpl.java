@@ -140,8 +140,6 @@ public class TaskDAOMySQLImpl implements TaskDAO {
 			pstmt.setInt(7, task.getTaskId());
 
 			pstmt.executeUpdate();
-
-			System.out.println("Hello");
 		} catch(SQLException sqlex) {
 			sqlex.printStackTrace();
 		} catch(Exception ex) {

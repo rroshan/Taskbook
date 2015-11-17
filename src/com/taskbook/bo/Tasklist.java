@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public class Tasklist {
 	private String owner;
 	private int tasklistID;
-	private String taskName;
+	private String tasklistName;
 	private Timestamp createdDate;
 	private Timestamp lastModifiedDate;
 	
@@ -21,12 +21,6 @@ public class Tasklist {
 	public void setTasklistID(int tasklistID) {
 		this.tasklistID = tasklistID;
 	}
-	public String getTaskName() {
-		return taskName;
-	}
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
-	}
 	public Timestamp getCreatedDate() {
 		return createdDate;
 	}
@@ -39,4 +33,11 @@ public class Tasklist {
 	public void setLastModifiedDate(Timestamp lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
+	public String getTasklistName() {
+		return tasklistName;
+	}
+	public void setTasklistName(String tasklistName) {
+		this.tasklistName = tasklistName;
+	}
+	
 }

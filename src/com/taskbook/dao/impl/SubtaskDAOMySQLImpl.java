@@ -69,8 +69,6 @@ public class SubtaskDAOMySQLImpl implements SubtaskDAO {
 			pstmt.setInt(1, taskId);
 			pstmt.executeUpdate();
 			
-			System.out.println(map.size());
-			
 			Subtask s = null;
 			Map.Entry pair;
 			Iterator it = map.entrySet().iterator();

@@ -45,7 +45,7 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 				taskList = new Tasklist();
 				taskList.setOwner(owner);
 				taskList.setTasklistID(tasklist_id);
-				taskList.setTaskName(category);
+				taskList.setTasklistName(category);
 				taskList.setCreatedDate(createdDate);
 				taskList.setLastModifiedDate(lastModifiedDate);
 
@@ -87,7 +87,7 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 				taskList = new Tasklist();
 				taskList.setOwner(owner);
 				taskList.setTasklistID(tasklist_id);
-				taskList.setTaskName(category);
+				taskList.setTasklistName(category);
 				taskList.setCreatedDate(createdDate);
 				taskList.setLastModifiedDate(lastModifiedDate);
 			}
@@ -113,7 +113,7 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 			String sql = "insert into tasklist (category, created_date, last_modified_date, owner) values (?, ?, ?, ?)";
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, taskList.getTaskName());
+			pstmt.setString(1, taskList.getTasklistName());
 			pstmt.setTimestamp(2, taskList.getCreatedDate());
 			pstmt.setTimestamp(3, taskList.getLastModifiedDate());
 			pstmt.setString(4, taskList.getOwner());
@@ -141,7 +141,7 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 			String sql = "update tasklist set category=?, last_modified_date=? where tasklist_id=?";
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, tasklist.getTaskName());
+			pstmt.setString(1, tasklist.getTasklistName());
 			pstmt.setTimestamp(2, new Timestamp(dt.getTime()));
 			pstmt.setInt(3, tasklist.getTasklistID());
 
@@ -158,7 +158,7 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 	}
 
 	@Override
-	public void deleteTasklist(int tasklist_id) {
+	public void deleteTasklist(Tasklist tasklist) {
 		//getting database connection from connection pool
 		//connection handled by tomcat
 		conn = ConnectionFactory.getConnection();
@@ -166,7 +166,7 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 			String sql = "delete from tasklist where tasklist_id=?";
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setInt(1, tasklist_id);
+			pstmt.setInt(1, tasklist.getTasklistID());
 
 			pstmt.executeUpdate();
 

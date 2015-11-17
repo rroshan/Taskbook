@@ -14,5 +14,5 @@ public interface TasklistDAO {
 	
 	public void updateTasklist(Tasklist tasklist);
 	
-	public void deleteTasklist(int tasklist_id);
+	public void deleteTasklist(Tasklist tasklist);
 }

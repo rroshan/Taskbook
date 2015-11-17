@@ -1,31 +1,27 @@
-package com.taskbook.service;
+package com.taskbook.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.google.gson.Gson;
 import com.taskbook.bo.Comment;
-import com.taskbook.dao.CommentsDAO;
-import com.taskbook.dao.impl.CommentsDAOMySQLImpl;
+import com.taskbook.service.CommentsService;
 
 /**
- * Servlet implementation class TestCommentsServlet
+ * Servlet implementation class CommentsServlet
  */
-@WebServlet("/TestCommentsServlet")
-public class TestCommentsServlet extends HttpServlet {
+@WebServlet("/CommentsServlet")
+public class CommentsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public TestCommentsServlet() {
+    public CommentsServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -42,41 +38,30 @@ public class TestCommentsServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
 		ArrayList<Comment> arrComments;
 		int taskId;
-		
-		Date today = new Date();
+		CommentsService commentsService = new CommentsService();
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		
 		String operation = request.getParameter("operation");
-		CommentsDAO dao = new CommentsDAOMySQLImpl();
 		taskId = Integer.parseInt(request.getParameter("taskId"));
 		
 		if(operation.equalsIgnoreCase("insert")) {
 			
 			String commentText = request.getParameter("commentText");
 
-			Comment comment = new Comment();
-			comment.setComment(commentText);
-			comment.setUserId("ROSH01"); //hardcoded for now
-			
-			java.sql.Timestamp commentTime = new java.sql.Timestamp(today.getTime());
-			
-			comment.setCommentTime(commentTime);
-			
-			dao.insertComment(comment, taskId);
+			commentsService.insertComments(taskId, "ROSH01", commentText);
 
 		}
 		else if(operation.equalsIgnoreCase("delete")) {
 			int commentId = Integer.parseInt(request.getParameter("commentId"));
 			
-			dao.deleteComment(commentId);
+			commentsService.deleteComment(commentId);
 		}
 		
-		arrComments = dao.viewAllComments(taskId);
+		arrComments = commentsService.viewAllComments(taskId);
 		
 		String commentsJson = new Gson().toJson(arrComments);
 		
