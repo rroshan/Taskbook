@@ -155,6 +155,16 @@ public class FriendsDAOMySQLImpl implements FriendsDAO {
 			pstmt.setString(3, userEmail);
 
 			pstmt.executeUpdate();
+			
+			sql = "insert into friendship (user_id_1, user_id_2, status) values (?, ?, ?)";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, userEmail);
+			pstmt.setString(2, senderEmail);
+			pstmt.setString(3, Constants.COMPLETED);
+
+			pstmt.executeUpdate();
+
 		} catch(SQLException sqlex) {
 			sqlex.printStackTrace();
 		} catch(Exception ex) {
