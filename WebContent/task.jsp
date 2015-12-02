@@ -37,49 +37,56 @@ body.padding2 {
 						"tasklistId" : '${tasklist.tasklistID }'
 					},
 					function(resp) {
-						$("#tasks_table").empty();
-						
-						var $th = $('<tr>').append(
-								$('<th>').text("Title"),
-								$('<th>').text("Last Modified Date"),
-								$('<th>').text("Assigned User"),
-								$('<th>').text("Status"),
-								$('<th>').text("Scope"),
-								$('<th>').text("Due Date"));
-						
-						$th.appendTo('#tasks_table');
-
-						$.each(resp, function(i, task) {
-							var status, scope;
-							if(task.status === 'C')
-							{
-								status = 'Completed';
-							}
-							else
-							{
-								status = 'Pending';
-							}
+						if(resp.type === "login" && resp.message === "Failed") 
+						{
+							window.location = "login.jsp";
+						} 
+						else 
+						{
+							$("#tasks_table").empty();
 							
-							if(task.scope === 'R')
-							{
-								scope = 'Private';
-							}
-							else
-							{
-								scope = 'Public';
-							}
+							var $th = $('<tr>').append(
+									$('<th>').text("Title"),
+									$('<th>').text("Last Modified Date"),
+									$('<th>').text("Assigned User"),
+									$('<th>').text("Status"),
+									$('<th>').text("Scope"),
+									$('<th>').text("Due Date"));
 							
-							var $tr = $('<tr>').append(
-									$('<td>').append('<a href="subtask?tasklistId=${tasklist.tasklistID }&taskId='+ task.taskId + '">'+task.title+'</a>'),
-									$('<td>').text(task.lastModifiedDate),
-									$('<td>').text(task.assignedUser),
-									$('<td>').text(status),
-									$('<td>').text(scope),
-									$('<td>').text(task.dueDate),
-									$('<td>').append('<a href="task?tasklistId=${tasklist.tasklistID }&taskId=' + task.taskId + '&operation=delete">Delete</a>'));
-
-							$tr.appendTo('#tasks_table');
-						});
+							$th.appendTo('#tasks_table');
+	
+							$.each(resp, function(i, task) {
+								var status, scope;
+								if(task.status === 'C')
+								{
+									status = 'Completed';
+								}
+								else
+								{
+									status = 'Pending';
+								}
+								
+								if(task.scope === 'R')
+								{
+									scope = 'Private';
+								}
+								else
+								{
+									scope = 'Public';
+								}
+								
+								var $tr = $('<tr>').append(
+										$('<td>').append('<a href="subtask?tasklistId=${tasklist.tasklistID }&taskId='+ task.taskId + '">'+task.title+'</a>'),
+										$('<td>').text(task.lastModifiedDate),
+										$('<td>').text(task.assignedUser),
+										$('<td>').text(status),
+										$('<td>').text(scope),
+										$('<td>').text(task.dueDate),
+										$('<td>').append('<a href="task?tasklistId=${tasklist.tasklistID }&taskId=' + task.taskId + '&operation=delete">Delete</a>'));
+	
+								$tr.appendTo('#tasks_table');
+							});
+						}
 					}).fail(function() {
 				alert("Page load failed!");
 			});

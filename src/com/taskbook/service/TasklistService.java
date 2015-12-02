@@ -41,9 +41,9 @@ public class TasklistService {
 		return tasklistBO;
 	}
 
-	public ArrayList<Tasklist> viewAllTasklists() {
+	public ArrayList<Tasklist> viewAllTasklists(String userId) {
 		ArrayList<Tasklist> completeTaskList = new ArrayList<Tasklist>();
-		completeTaskList = dao.viewAllTasklists();
+		completeTaskList = dao.viewAllTasklists(userId);
 
 		return completeTaskList;
 	}

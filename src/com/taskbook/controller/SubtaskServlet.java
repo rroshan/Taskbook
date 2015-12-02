@@ -10,11 +10,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
+import com.taskbook.bo.MessageBean;
 import com.taskbook.bo.Subtask;
 import com.taskbook.bo.Task;
 import com.taskbook.bo.Tasklist;
+import com.taskbook.bo.UserProfile;
 import com.taskbook.service.SubtaskService;
 import com.taskbook.service.TaskService;
 import com.taskbook.service.TasklistService;
@@ -55,86 +58,40 @@ public class SubtaskServlet extends HttpServlet {
 		int taskId, tasklistId;
 		String jsonResult;
 
-		response.setCharacterEncoding("UTF-8");
+		HttpSession session = request.getSession();
 
-		if(!request.getParameterMap().containsKey("operation"))
-		{	
-			String id = request.getParameter("taskId");
-			taskId = Integer.parseInt(id);
+		UserProfile user = (UserProfile)session.getAttribute("user");
 
-			tasklistId = Integer.parseInt(request.getParameter("tasklistId"));
-
-			Task task = taskService.viewTask(taskId);
-			Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
-
-			request.setAttribute("task", task);
-			request.setAttribute("date", com.taskbook.util.Timestamp.getDate(task.getDueDate()));
-			request.setAttribute("time", com.taskbook.util.Timestamp.getTime(task.getDueDate()));
-			request.setAttribute("tasklist", tasklist);
-
-			RequestDispatcher rd = getServletContext().getRequestDispatcher("/subtask.jsp");
-			rd.forward(request, response);
+		if(user == null) {
+			if(request.getParameterMap().containsKey("operation"))
+			{
+				if(request.getParameter("operation").equalsIgnoreCase("load_all"))
+				{
+					response.setContentType("application/json");
+					MessageBean msg = new MessageBean();
+					msg.setType("login");
+					msg.setMessage("Failed");
+					jsonResult = new Gson().toJson(msg);
+					response.getWriter().write(jsonResult);
+				}
+				else if(request.getParameter("operation").equalsIgnoreCase("save"))
+				{
+					RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
+					rd.forward(request, response);
+				}
+			}
+			else
+			{
+				RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
+				rd.forward(request, response);
+			}
 		}
 		else
 		{
-			if(request.getParameter("operation").equalsIgnoreCase("load_all"))
-			{
-				response.setContentType("application/json");
-				String id = request.getParameter("taskId");
-				taskId = Integer.parseInt(id);
-				jsonResult = new Gson().toJson(subtaskService.viewAllSubtasks(taskId));
-				response.getWriter().write(jsonResult);
-			}
-			else if(request.getParameter("operation").equalsIgnoreCase("save"))
-			{
-				Enumeration<String> e = request.getParameterNames();
+			response.setCharacterEncoding("UTF-8");
 
-				HashMap<Integer, Subtask> map = new HashMap<Integer, Subtask>();
-				int i;
-				Subtask s;
-				int count = 1;
-				tasklistId = 0;
-				taskId = 0;
-
-				while(e.hasMoreElements()) {
-					String param = e.nextElement();
-
-					if(param.toLowerCase().contains("subtask") && !param.toLowerCase().contains("csubtask")) 
-					{
-						i = Integer.parseInt(param.substring(7));
-						s = map.get(i);
-
-						if(s == null) {
-							s = new Subtask();
-							s.setsNo(count);
-							map.put(i, s);
-							count++;
-						}
-						s.setDescription(request.getParameter(param));
-					} 
-					else if(param.toLowerCase().contains("status")) 
-					{
-						i = Integer.parseInt(param.substring(6));
-						s = map.get(i);
-
-						if(s == null) {
-							s = new Subtask();
-							s.setsNo(count);
-							map.put(i, s);
-							count++;
-						}
-						s.setStatus(request.getParameter(param));
-					}
-					else if(param.equals("tasklistId")) {
-						tasklistId = Integer.parseInt(request.getParameter(param));
-					}
-					else if(param.equals("taskId")) {
-						taskId = Integer.parseInt(request.getParameter(param));
-					}
-				}
-
-				subtaskService.saveSubtasks(map, taskId);
-				
+			if(!request.getParameterMap().containsKey("operation"))
+			{	
 				String id = request.getParameter("taskId");
 				taskId = Integer.parseInt(id);
 
@@ -150,6 +107,83 @@ public class SubtaskServlet extends HttpServlet {
 
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/subtask.jsp");
 				rd.forward(request, response);
+			}
+			else
+			{
+				if(request.getParameter("operation").equalsIgnoreCase("load_all"))
+				{
+					response.setContentType("application/json");
+					String id = request.getParameter("taskId");
+					taskId = Integer.parseInt(id);
+					jsonResult = new Gson().toJson(subtaskService.viewAllSubtasks(taskId));
+					response.getWriter().write(jsonResult);
+				}
+				else if(request.getParameter("operation").equalsIgnoreCase("save"))
+				{
+					Enumeration<String> e = request.getParameterNames();
+
+					HashMap<Integer, Subtask> map = new HashMap<Integer, Subtask>();
+					int i;
+					Subtask s;
+					int count = 1;
+					tasklistId = 0;
+					taskId = 0;
+
+					while(e.hasMoreElements()) {
+						String param = e.nextElement();
+
+						if(param.toLowerCase().contains("subtask") && !param.toLowerCase().contains("csubtask")) 
+						{
+							i = Integer.parseInt(param.substring(7));
+							s = map.get(i);
+
+							if(s == null) {
+								s = new Subtask();
+								s.setsNo(count);
+								map.put(i, s);
+								count++;
+							}
+							s.setDescription(request.getParameter(param));
+						} 
+						else if(param.toLowerCase().contains("status")) 
+						{
+							i = Integer.parseInt(param.substring(6));
+							s = map.get(i);
+
+							if(s == null) {
+								s = new Subtask();
+								s.setsNo(count);
+								map.put(i, s);
+								count++;
+							}
+							s.setStatus(request.getParameter(param));
+						}
+						else if(param.equals("tasklistId")) {
+							tasklistId = Integer.parseInt(request.getParameter(param));
+						}
+						else if(param.equals("taskId")) {
+							taskId = Integer.parseInt(request.getParameter(param));
+						}
+					}
+
+					subtaskService.saveSubtasks(map, taskId);
+
+					String id = request.getParameter("taskId");
+					taskId = Integer.parseInt(id);
+
+					tasklistId = Integer.parseInt(request.getParameter("tasklistId"));
+
+					Task task = taskService.viewTask(taskId);
+					Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
+
+					request.setAttribute("task", task);
+					request.setAttribute("date", com.taskbook.util.Timestamp.getDate(task.getDueDate()));
+					request.setAttribute("time", com.taskbook.util.Timestamp.getTime(task.getDueDate()));
+					request.setAttribute("tasklist", tasklist);
+
+					RequestDispatcher rd = getServletContext().getRequestDispatcher("/subtask.jsp");
+					rd.forward(request, response);
+				}
 			}
 		}
 	}

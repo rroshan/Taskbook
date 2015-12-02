@@ -84,6 +84,7 @@ public class UserProfileDAOMySQLImpl implements UserProfileDAO {
 
 			while (set.next()) {
 				// Retrieve by column name
+				String user_id = set.getString("user_id");
 				String firstName = set.getString("fname");
 				String lastName = set.getString("lname");
 				String phoneNumber = set.getString("phone");
@@ -92,6 +93,7 @@ public class UserProfileDAOMySQLImpl implements UserProfileDAO {
 				int karmaPointsBlocked = set.getInt("karma_points_blocked");
 
 				userProfile = new UserProfile();
+				userProfile.setUserId(user_id);
 				userProfile.setFirstName(firstName);
 				userProfile.setLastName(lastName);
 				userProfile.setPhoneNumber(phoneNumber);

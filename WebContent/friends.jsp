@@ -37,26 +37,33 @@ body.padding2 {
 						"operation" : "load_all"
 					},
 					function(resp) {
-						$("#friends_table").empty();
-						
-						var $th = $('<tr>').append(
-								$('<th>').text("First Name"),
-								$('<th>').text("Last Name"),
-								$('<th>').text("Phone"),
-								$('<th>').text("Address"));
-						
-						$th.appendTo('#friends_table');
-
-						$.each(resp, function(i, friend) {
+						if(resp.type === "login" && resp.message === "Failed") 
+						{
+							window.location = "login.jsp";
+						}
+						else
+						{
+							$("#friends_table").empty();
 							
-							var $tr = $('<tr>').append(
-									$('<td>').text(friend.firstName),
-									$('<td>').text(friend.lastName),
-									$('<td>').text(friend.phoneNumber),
-									$('<td>').text(friend.address));
-
-							$tr.appendTo('#friends_table');
-						});
+							var $th = $('<tr>').append(
+									$('<th>').text("First Name"),
+									$('<th>').text("Last Name"),
+									$('<th>').text("Phone"),
+									$('<th>').text("Address"));
+							
+							$th.appendTo('#friends_table');
+	
+							$.each(resp, function(i, friend) {
+								
+								var $tr = $('<tr>').append(
+										$('<td>').text(friend.firstName),
+										$('<td>').text(friend.lastName),
+										$('<td>').text(friend.phoneNumber),
+										$('<td>').text(friend.address));
+	
+								$tr.appendTo('#friends_table');
+							});
+						}
 					}).fail(function() {
 				alert("Page load failed!");
 			});
@@ -78,17 +85,23 @@ body.padding2 {
 							cache : false
 						}).done(
 								function(resp) {
-									console.log(resp.type);
-									if (resp.type === "Fail") {
-										$("#response_message").empty().append(
-												'<div class="alert alert-dismissible alert-danger">'
-														+ resp.message + '</div>');
-									} else if(resp.type == "Notification") {
-										$("#response_message").empty().append(
-												'<div class="alert alert-dismissible alert-info">'
-														+ resp.message + '</div>');
-									} else if (resp.type === "Success") {
-										self.submit();
+									if(resp.type === "login" && resp.message === "Failed") 
+									{
+										window.location = "login.jsp";
+									}
+									else
+									{
+										if (resp.type === "Fail") {
+											$("#response_message").empty().append(
+													'<div class="alert alert-dismissible alert-danger">'
+															+ resp.message + '</div>');
+										} else if(resp.type == "Notification") {
+											$("#response_message").empty().append(
+													'<div class="alert alert-dismissible alert-info">'
+															+ resp.message + '</div>');
+										} else if (resp.type === "Success") {
+											self.submit();
+										}
 									}
 								}).fail(function() {
 							alert('error');

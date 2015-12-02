@@ -36,22 +36,29 @@ body.padding2 {
 							"operation" : "load_all"
 						},
 						function(resp) {
-							$("#tasklists_table").empty();
-							
-							var $th = $('<tr>').append(
-									$('<th>').text("Category"),
-									$('<th>').text("Last Modified Date"));
-							
-							$th.appendTo('#tasklists_table');
+							if(resp.type === "login" && resp.message === "Failed") 
+							{
+								window.location = "login.jsp";
+							} 
+							else 
+							{
+								$("#tasklists_table").empty();
+								
+								var $th = $('<tr>').append(
+										$('<th>').text("Category"),
+										$('<th>').text("Last Modified Date"));
+								
+								$th.appendTo('#tasklists_table');
 
-							$.each(resp, function(i, tasklist) {
-								var $tr = $('<tr>').append(
-										$('<td>').append('<a href="task?tasklistId='+tasklist.tasklistID+'">'+tasklist.tasklistName+'</a>'),
-										$('<td>').text(tasklist.lastModifiedDate),
-										$('<td>').append('<a href="tasklist?tasklistId='+tasklist.tasklistID+'&operation=delete">Delete</a>'));
+								$.each(resp, function(i, tasklist) {
+									var $tr = $('<tr>').append(
+											$('<td>').append('<a href="task?tasklistId='+tasklist.tasklistID+'">'+tasklist.tasklistName+'</a>'),
+											$('<td>').text(tasklist.lastModifiedDate),
+											$('<td>').append('<a href="tasklist?tasklistId='+tasklist.tasklistID+'&operation=delete">Delete</a>'));
 
-								$tr.appendTo('#tasklists_table');
-							});
+									$tr.appendTo('#tasklists_table');
+								});
+							}
 						}).fail(function() {
 					alert("Page load failed!");
 				});

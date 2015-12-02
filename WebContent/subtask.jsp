@@ -40,183 +40,190 @@ div {
 						"tasklistId" : '${tasklist.tasklistID }'
 					},
 					function(resp) {
-						$("#subtask_list").empty();
-						var $form = $("<form></form>");
-						$form.attr({
-					        'action' : 'subtask',
-					        'method' : 'post',
-					        'id'	 : 'subtaskform'
-					    });
-						
-						$form.appendTo('#subtask_list');
-						
-						var $input = $("<input></input>");
-						$input.attr({
-							'type'  : 'hidden',
-							'name'  : 'taskId',
-							'value'    : '${task.taskId }'
-						});
-						
-						$input.appendTo('#subtask_list form');
-						
-						$input = $("<input></input>");
-						$input.attr({
-							'type'  : 'hidden',
-							'name'  : 'tasklistId',
-							'value'    : '${tasklist.tasklistID }'
-						});
-						
-						$input.appendTo('#subtask_list form');
-						
-						$input = $("<input></input>");
-						$input.attr({
-							'type'  : 'hidden',
-							'name'  : 'operation',
-							'value'    : 'save'
-						});
-						
-						$input.appendTo('#subtask_list form');
-						
-						var $div = $("<div></div>");
-						$div.attr({
-							'id'  : 'TextBoxesGroup'
-						});
-						
-						$div.appendTo('#subtask_list form');
-
-						$.each(resp, function(i, subtask) {
-							
-							$div = $("<div></div>");
-							$div.attr({
-								'id'  : 'TextBoxDiv'+(i+1)
-							});
-							
-							$div.appendTo('#subtask_list form #TextBoxesGroup');
-							
-							$input = $("<input></input>");
-							$input.attr({
-								'type'  : 'checkbox',
-								'value' : 'csubtask'+(i+1),
-								'name'  : 'csubtask',
-								'id'    : 'csubtask'+(i+1)
-							});
-							
-							$input.appendTo('#subtask_list form #TextBoxDiv'+(i+1));
-							
-							$input = $("<input></input>");
-							$input.attr({
-								'type'  : 'textbox',
-								'id'    : 'subtask'+(i+1),
-								'name'  : 'subtask'+(i+1),
-								'class' : 'classsubtask',
-								'value'    : subtask.description
-							});
-							
-							$input.prop('required',true);
-							$input.appendTo('#subtask_list form #TextBoxDiv'+(i+1));
-							
-							var $select = $("<select></select>");
-							$select.attr({
-								'name'  : 'status'+(i+1),
-								'form'    : 'subtaskform'
-							});
-							
-							$select.appendTo('#subtask_list form #TextBoxDiv'+(i+1));
-							
-							var $option = $("<option></option>");
-							if(subtask.status === 'N')
-							{
-								$option.attr({
-									'value'  : 'N',
-									'selected'    : 'selected'
-								});
-								
-								$option.text('Pending');
-								
-								$option.appendTo('#subtask_list form #TextBoxDiv'+(i+1)+' select');
-								
-								$option = $("<option></option>");
-								$option.attr({
-									'value'  : 'Y'
-								});
-								
-								$option.text('Completed');
-								
-								$option.appendTo('#subtask_list form #TextBoxDiv'+(i+1)+' select');
-							}
-							else
-							{
-								$option.attr({
-									'value'  : 'Y',
-									'selected'    : 'selected'
-								});
-								
-								$option.text('Completed');
-								
-								$option.appendTo('#subtask_list form #TextBoxDiv'+(i+1)+' select');
-								
-								$option = $("<option></option>");
-								$option.attr({
-									'value'  : 'N'
-								});
-								
-								$option.text('Pending');
-								
-								$option.appendTo('#subtask_list form #TextBoxDiv'+(i+1)+' select');
-							}
-						});
-
-						$input = $("<input></input>");
-						$input.attr({
-							'type'  : 'button',
-							'id'    : 'addButton',
-							'value' : 'Add subtask',
-							'class' : 'btn btn-success',
-							'onclick' : 'addSubtask()'
-						});
-						
-						$input.appendTo('#subtask_list form');
-
-						$input = $("<input></input>");
-						$input.attr({
-							'type'  : 'button',
-							'id'    : 'removeButton',
-							'value' : 'Remove subtask',
-							'class' : 'btn btn-danger',
-							'onclick' : 'removeSubtask()'
-						});
-						
-						$input.appendTo('#subtask_list form');
-						
-						$input = $("<input></input>");
-						$input.attr({
-							'type'  : 'submit',
-							'class'    : 'btn btn-primary',
-							'value' : 'Save'
-						});
-						
-						$input.appendTo('#subtask_list form');
-						
-					    var max = -1;
-					    
-						var maxCount =$('.classsubtask').map(function() {
-						    return this.id.substr(7);
-						}).get();
-						
-						if(maxCount.length == 0)
+						if(resp.type === "login" && resp.message === "Failed") 
 						{
-							max = 0;	
+							window.location = "login.jsp";
 						}
 						else
 						{
-							for (var i=0; i < maxCount.length; i++) {
-								if(maxCount[i] > max) {
-									max = maxCount[i];
+							$("#subtask_list").empty();
+							var $form = $("<form></form>");
+							$form.attr({
+						        'action' : 'subtask',
+						        'method' : 'post',
+						        'id'	 : 'subtaskform'
+						    });
+							
+							$form.appendTo('#subtask_list');
+							
+							var $input = $("<input></input>");
+							$input.attr({
+								'type'  : 'hidden',
+								'name'  : 'taskId',
+								'value'    : '${task.taskId }'
+							});
+							
+							$input.appendTo('#subtask_list form');
+							
+							$input = $("<input></input>");
+							$input.attr({
+								'type'  : 'hidden',
+								'name'  : 'tasklistId',
+								'value'    : '${tasklist.tasklistID }'
+							});
+							
+							$input.appendTo('#subtask_list form');
+							
+							$input = $("<input></input>");
+							$input.attr({
+								'type'  : 'hidden',
+								'name'  : 'operation',
+								'value'    : 'save'
+							});
+							
+							$input.appendTo('#subtask_list form');
+							
+							var $div = $("<div></div>");
+							$div.attr({
+								'id'  : 'TextBoxesGroup'
+							});
+							
+							$div.appendTo('#subtask_list form');
+	
+							$.each(resp, function(i, subtask) {
+								
+								$div = $("<div></div>");
+								$div.attr({
+									'id'  : 'TextBoxDiv'+(i+1)
+								});
+								
+								$div.appendTo('#subtask_list form #TextBoxesGroup');
+								
+								$input = $("<input></input>");
+								$input.attr({
+									'type'  : 'checkbox',
+									'value' : 'csubtask'+(i+1),
+									'name'  : 'csubtask',
+									'id'    : 'csubtask'+(i+1)
+								});
+								
+								$input.appendTo('#subtask_list form #TextBoxDiv'+(i+1));
+								
+								$input = $("<input></input>");
+								$input.attr({
+									'type'  : 'textbox',
+									'id'    : 'subtask'+(i+1),
+									'name'  : 'subtask'+(i+1),
+									'class' : 'classsubtask',
+									'value'    : subtask.description
+								});
+								
+								$input.prop('required',true);
+								$input.appendTo('#subtask_list form #TextBoxDiv'+(i+1));
+								
+								var $select = $("<select></select>");
+								$select.attr({
+									'name'  : 'status'+(i+1),
+									'form'    : 'subtaskform'
+								});
+								
+								$select.appendTo('#subtask_list form #TextBoxDiv'+(i+1));
+								
+								var $option = $("<option></option>");
+								if(subtask.status === 'N')
+								{
+									$option.attr({
+										'value'  : 'N',
+										'selected'    : 'selected'
+									});
+									
+									$option.text('Pending');
+									
+									$option.appendTo('#subtask_list form #TextBoxDiv'+(i+1)+' select');
+									
+									$option = $("<option></option>");
+									$option.attr({
+										'value'  : 'Y'
+									});
+									
+									$option.text('Completed');
+									
+									$option.appendTo('#subtask_list form #TextBoxDiv'+(i+1)+' select');
+								}
+								else
+								{
+									$option.attr({
+										'value'  : 'Y',
+										'selected'    : 'selected'
+									});
+									
+									$option.text('Completed');
+									
+									$option.appendTo('#subtask_list form #TextBoxDiv'+(i+1)+' select');
+									
+									$option = $("<option></option>");
+									$option.attr({
+										'value'  : 'N'
+									});
+									
+									$option.text('Pending');
+									
+									$option.appendTo('#subtask_list form #TextBoxDiv'+(i+1)+' select');
+								}
+							});
+	
+							$input = $("<input></input>");
+							$input.attr({
+								'type'  : 'button',
+								'id'    : 'addButton',
+								'value' : 'Add subtask',
+								'class' : 'btn btn-success',
+								'onclick' : 'addSubtask()'
+							});
+							
+							$input.appendTo('#subtask_list form');
+	
+							$input = $("<input></input>");
+							$input.attr({
+								'type'  : 'button',
+								'id'    : 'removeButton',
+								'value' : 'Remove subtask',
+								'class' : 'btn btn-danger',
+								'onclick' : 'removeSubtask()'
+							});
+							
+							$input.appendTo('#subtask_list form');
+							
+							$input = $("<input></input>");
+							$input.attr({
+								'type'  : 'submit',
+								'class'    : 'btn btn-primary',
+								'value' : 'Save'
+							});
+							
+							$input.appendTo('#subtask_list form');
+							
+						    var max = -1;
+						    
+							var maxCount =$('.classsubtask').map(function() {
+							    return this.id.substr(7);
+							}).get();
+							
+							if(maxCount.length == 0)
+							{
+								max = 0;	
+							}
+							else
+							{
+								for (var i=0; i < maxCount.length; i++) {
+									if(maxCount[i] > max) {
+										max = maxCount[i];
+									}
 								}
 							}
+							
+							counter = parseInt(max) + 1;
 						}
-						
-						counter = parseInt(max) + 1;
 					}).fail(function() {
 				alert("Page load failed!");
 			});
@@ -252,7 +259,6 @@ div {
 		    return this.id.substr(8);
 		}).get();
 		
-		console.log(checkedId)
 		
 		for (var i=0; i < checkedId.length; i++) {
 			$("#TextBoxDiv" + checkedId[i]).remove();
@@ -265,7 +271,14 @@ div {
 		 //ajax post query
 		 $.post('comments', {"taskId":'${task.taskId }', "operation":"load"},
 				 function(resp) {
-			 		displayComment(resp);
+					if(resp.type === "login" && resp.message === "Failed") 
+					{
+						window.location = "login.jsp";
+					}
+					else
+					{
+			 			displayComment(resp);
+					}
 		 })
 		 .fail(function() {
 				alert("Failed to insert comment");
@@ -283,7 +296,14 @@ div {
 		 //ajax post query
 		 $.post('comments', {"commentText":commentText, "taskId":taskId, "operation":"insert"},
 				 function(resp) {
-			 		displayComment(resp);
+					if(resp.type === "login" && resp.message === "Failed") 
+					{
+						window.location = "login.jsp";
+					}
+					else
+					{
+			 			displayComment(resp);
+					}
 		 })
 		 .fail(function() {
 				alert("Failed to insert comment");
@@ -299,7 +319,14 @@ div {
 		 //ajax post query
 		 $.post('comments', {"commentId":commentId, "taskId":taskId, "operation":"delete"},
 				 function(resp) {
-			 		displayComment(resp);
+					if(resp.type === "login" && resp.message === "Failed") 
+					{
+						window.location = "login.jsp";
+					}
+					else
+					{
+			 			displayComment(resp);
+					}
 		 })
 		 .fail(function() {
 				alert("Failed to insert comment");

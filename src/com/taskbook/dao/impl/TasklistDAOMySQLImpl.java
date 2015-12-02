@@ -21,7 +21,7 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 	private ResultSet set;
 
 	@Override
-	public ArrayList<Tasklist> viewAllTasklists() {
+	public ArrayList<Tasklist> viewAllTasklists(String userId) {
 		ArrayList<Tasklist> arrTasklist = new ArrayList<Tasklist>();
 		Tasklist taskList;
 
@@ -30,9 +30,11 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 		conn = ConnectionFactory.getConnection();
 
 		try {
-			stmt = conn.createStatement();
-			String sql = "select * from tasklist;";
-			set = stmt.executeQuery(sql);
+			String sql = "select * from tasklist where owner=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userId);
+			
+			set = pstmt.executeQuery();
 
 			while(set.next()){
 				//Retrieve by column name
@@ -56,7 +58,7 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			ConnectionFactory.closeResources(set, stmt, conn);
+			ConnectionFactory.closeResources(set, pstmt, conn);
 		}
 
 		return arrTasklist;

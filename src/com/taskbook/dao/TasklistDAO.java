@@ -6,7 +6,7 @@ import com.taskbook.bo.Tasklist;
 
 public interface TasklistDAO {
 	
-	public ArrayList<Tasklist> viewAllTasklists();
+	public ArrayList<Tasklist> viewAllTasklists(String userId);
 	
 	public Tasklist viewTasklist(int tasklist_id);
 	
