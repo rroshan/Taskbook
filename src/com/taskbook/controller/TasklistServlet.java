@@ -50,7 +50,7 @@ public class TasklistServlet extends HttpServlet {
 			if(request.getParameter("operation").equalsIgnoreCase("load_all"))
 			{
 				response.setContentType("application/json");
-				jsonResult = new Gson().toJson(tasklistService.viewAllTasklists());
+				jsonResult = new Gson().toJson(tasklistService.viewAllTasklists()); //need to get according to the user..not all tasklists
 				response.getWriter().write(jsonResult);
 			}
 			else if(request.getParameter("operation").equalsIgnoreCase("delete"))

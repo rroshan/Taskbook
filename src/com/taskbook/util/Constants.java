@@ -14,7 +14,9 @@ public class Constants {
 	   
 	   public final static Constants INSTANCE = new Constants();
 	   
-	   public static final String maybe="maybe";	 
+	   public static final String COMPLETED="Y";	
+	   
+	   public static final String PENDING="N";
 	   
 	   private Constants() {
 		         // Exists only to defeat instantiation.
