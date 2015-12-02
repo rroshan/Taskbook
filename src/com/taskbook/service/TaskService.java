@@ -22,6 +22,11 @@ public class TaskService {
 		dao.deleteTask(taskId);
 	}
 	
+	public int checkPermission(int tasklistId, int taskId, String userId) {
+		
+		return dao.checkPermission(tasklistId, taskId, userId);	
+	}
+	
 	public void createTask(int tasklistId, String taskTitle, String owner, String scope, String date, String time)
 	{
 		Date today = new Date();
@@ -51,7 +56,7 @@ public class TaskService {
 		
 		java.sql.Timestamp today_ts = new java.sql.Timestamp(today.getTime());
 		
-		Task task = new Task();
+		Task task = viewTask(taskId);
 		
 		task.setTaskId(taskId);
 		task.setLastModifiedDate(today_ts);

@@ -1,0 +1,71 @@
+<%@ page language="java" contentType="text/html; charset=US-ASCII"
+    pageEncoding="US-ASCII"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="Taskbook">
+<meta name="author" content="roshan">
+<link rel="icon" href="../../favicon.ico">
+
+<style>
+body.padding2 {
+	padding-left: 1cm;
+}
+</style>
+
+<title>Error</title>
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<style type="text/css">
+div {
+	padding: 8px;
+}
+</style>
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+	<div class="bs-component">
+		<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> 
+					<span class="icon-bar"></span> <span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="tasklist.jsp">Home</a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="friends.jsp">Friends</a></li>
+					<li><a href="book_checkin.jsp">Shared Task</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="logout">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+		</nav>
+	</div>
+	
+	<div class="col-lg-4">
+		<div class="bs-component" id="response_message">
+			<c:if test="${not empty message}">
+				<div class="alert alert-dismissible alert-danger">${message }
+				</div>
+			</c:if>
+		</div>
+	</div>
+</body>
+</html>

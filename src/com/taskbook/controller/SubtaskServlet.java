@@ -91,11 +91,19 @@ public class SubtaskServlet extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 
 			if(!request.getParameterMap().containsKey("operation"))
-			{	
+			{
 				String id = request.getParameter("taskId");
 				taskId = Integer.parseInt(id);
 
 				tasklistId = Integer.parseInt(request.getParameter("tasklistId"));
+				
+				int result = taskService.checkPermission(tasklistId, taskId, user.getUserId());
+				
+				if(result == -1) {
+					request.setAttribute("message", "You don't have permission to view details about this task");
+					RequestDispatcher rd = getServletContext().getRequestDispatcher("/error.jsp");
+					rd.forward(request, response);
+				}
 
 				Task task = taskService.viewTask(taskId);
 				Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
@@ -120,69 +128,82 @@ public class SubtaskServlet extends HttpServlet {
 				}
 				else if(request.getParameter("operation").equalsIgnoreCase("save"))
 				{
-					Enumeration<String> e = request.getParameterNames();
-
-					HashMap<Integer, Subtask> map = new HashMap<Integer, Subtask>();
-					int i;
-					Subtask s;
-					int count = 1;
-					tasklistId = 0;
-					taskId = 0;
-
-					while(e.hasMoreElements()) {
-						String param = e.nextElement();
-
-						if(param.toLowerCase().contains("subtask") && !param.toLowerCase().contains("csubtask")) 
-						{
-							i = Integer.parseInt(param.substring(7));
-							s = map.get(i);
-
-							if(s == null) {
-								s = new Subtask();
-								s.setsNo(count);
-								map.put(i, s);
-								count++;
-							}
-							s.setDescription(request.getParameter(param));
-						} 
-						else if(param.toLowerCase().contains("status")) 
-						{
-							i = Integer.parseInt(param.substring(6));
-							s = map.get(i);
-
-							if(s == null) {
-								s = new Subtask();
-								s.setsNo(count);
-								map.put(i, s);
-								count++;
-							}
-							s.setStatus(request.getParameter(param));
-						}
-						else if(param.equals("tasklistId")) {
-							tasklistId = Integer.parseInt(request.getParameter(param));
-						}
-						else if(param.equals("taskId")) {
-							taskId = Integer.parseInt(request.getParameter(param));
-						}
-					}
-
-					subtaskService.saveSubtasks(map, taskId);
-
-					String id = request.getParameter("taskId");
-					taskId = Integer.parseInt(id);
-
+					//int result = taskService.checkPermission(tasklistId, taskId, user.getUserId());
 					tasklistId = Integer.parseInt(request.getParameter("tasklistId"));
+					taskId = Integer.parseInt(request.getParameter("taskId"));
+					
+					int result = taskService.checkPermission(tasklistId, taskId, user.getUserId());
+					
+					if(result == 0) {
+						Enumeration<String> e = request.getParameterNames();
 
-					Task task = taskService.viewTask(taskId);
-					Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
+						HashMap<Integer, Subtask> map = new HashMap<Integer, Subtask>();
+						int i;
+						Subtask s;
+						int count = 1;
+						tasklistId = 0;
+						taskId = 0;
 
-					request.setAttribute("task", task);
-					request.setAttribute("date", com.taskbook.util.Timestamp.getDate(task.getDueDate()));
-					request.setAttribute("time", com.taskbook.util.Timestamp.getTime(task.getDueDate()));
-					request.setAttribute("tasklist", tasklist);
+						while(e.hasMoreElements()) {
+							String param = e.nextElement();
 
-					RequestDispatcher rd = getServletContext().getRequestDispatcher("/subtask.jsp");
-					rd.forward(request, response);
+							if(param.toLowerCase().contains("subtask") && !param.toLowerCase().contains("csubtask")) 
+							{
+								i = Integer.parseInt(param.substring(7));
+								s = map.get(i);
+
+								if(s == null) {
+									s = new Subtask();
+									s.setsNo(count);
+									map.put(i, s);
+									count++;
+								}
+								s.setDescription(request.getParameter(param));
+							} 
+							else if(param.toLowerCase().contains("status")) 
+							{
+								i = Integer.parseInt(param.substring(6));
+								s = map.get(i);
+
+								if(s == null) {
+									s = new Subtask();
+									s.setsNo(count);
+									map.put(i, s);
+									count++;
+								}
+								s.setStatus(request.getParameter(param));
+							}
+							else if(param.equals("tasklistId")) {
+								tasklistId = Integer.parseInt(request.getParameter(param));
+							}
+							else if(param.equals("taskId")) {
+								taskId = Integer.parseInt(request.getParameter(param));
+							}
+						}
+
+						subtaskService.saveSubtasks(map, taskId);
+
+						String id = request.getParameter("taskId");
+						taskId = Integer.parseInt(id);
+
+						tasklistId = Integer.parseInt(request.getParameter("tasklistId"));
+
+						Task task = taskService.viewTask(taskId);
+						Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
+
+						request.setAttribute("task", task);
+						request.setAttribute("date", com.taskbook.util.Timestamp.getDate(task.getDueDate()));
+						request.setAttribute("time", com.taskbook.util.Timestamp.getTime(task.getDueDate()));
+						request.setAttribute("tasklist", tasklist);
+
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/subtask.jsp");
+						rd.forward(request, response);
+					} else if(result == 1) {
+						//assigned user saving..not allowed
+						request.setAttribute("message", "You only have permission to view and comment on this task");
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/error.jsp");
+						rd.forward(request, response);
+					}
 				}
 			}
 		}

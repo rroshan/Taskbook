@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
 import com.taskbook.bo.Task;
 import com.taskbook.dao.ConnectionFactory;
 import com.taskbook.dao.TaskDAO;
@@ -193,5 +194,50 @@ public class TaskDAOMySQLImpl implements TaskDAO {
 		}
 
 		return task;
+	}
+
+	@Override
+	public int checkPermission(int tasklistId, int taskId, String userId) {
+		// TODO Auto-generated method stub
+		//get owner of tasklist
+		conn = ConnectionFactory.getConnection();
+
+		try {
+			String sql = "select owner from tasklist where tasklist_id=?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, tasklistId);
+			set = pstmt.executeQuery();
+
+			set.next();
+			//Retrieve by column name
+			String owner = set.getString("owner");
+			
+			if(owner.equalsIgnoreCase(userId)) {
+				return 0; //updater is the owner
+			}
+			
+			sql = "select assigned_user from tasks where tasklist_id=? and task_id=?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, tasklistId);
+			pstmt.setInt(2, taskId);
+			set = pstmt.executeQuery();
+			
+			set.next();
+			String assigned_user = set.getString("assigned_user");
+			
+			if(assigned_user.equalsIgnoreCase(userId)) {
+				return 1; //updater is the assigned user
+			}
+			
+		} catch(SQLException sqlex) {
+			sqlex.printStackTrace();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			ConnectionFactory.closeResources(set, pstmt, conn);
+		}
+		return -1; //mostly will never come to this.
 	}
 }

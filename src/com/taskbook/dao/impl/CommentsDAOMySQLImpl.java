@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
 import com.taskbook.bo.Comment;
 import com.taskbook.dao.CommentsDAO;
 import com.taskbook.dao.ConnectionFactory;
@@ -105,6 +106,37 @@ public class CommentsDAOMySQLImpl implements CommentsDAO {
 		} finally {
 			ConnectionFactory.closeResources(set, pstmt, conn);
 		}
+	}
+
+	@Override
+	public int checkPermission(int commentId, String userId) {
+		// TODO Auto-generated method stub
+		conn = ConnectionFactory.getConnection();
+
+		try {
+			String sql = "select user_id from comments where comment_id=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, commentId);
+
+			set = pstmt.executeQuery();
+
+			set.next();
+				//Retrieve by column name
+			String commentOwner = set.getString("user_id");
+			
+			if(userId.equalsIgnoreCase(commentOwner)) {
+				return 1;
+			}
+			
+		} catch(SQLException sqlex) {
+			sqlex.printStackTrace();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			ConnectionFactory.closeResources(set, pstmt, conn);
+		}
+
+		return 0;
 	}
 
 }

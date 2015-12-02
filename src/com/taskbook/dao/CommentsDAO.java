@@ -10,4 +10,6 @@ public interface CommentsDAO {
 	public ArrayList<Comment> viewAllComments(int taskId);
 	
 	public void deleteComment(int commentId);
+	
+	public int checkPermission(int commentId, String userId);
 }

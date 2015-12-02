@@ -90,12 +90,20 @@ public class TaskServlet extends HttpServlet {
 				{
 					String id = request.getParameter("tasklistId");
 					tasklistId = Integer.parseInt(id);
+					
+					int result = tasklistService.checkPermission(tasklistId, user.getUserId());
+					
+					if(result == 1) {
+						Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
+						request.setAttribute("tasklist", tasklist);
 
-					Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
-					request.setAttribute("tasklist", tasklist);
-
-					RequestDispatcher rd = getServletContext().getRequestDispatcher("/task.jsp");
-					rd.forward(request, response);
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/task.jsp");
+						rd.forward(request, response);
+					} else {
+						request.setAttribute("message", "You don't have permission to view this tasklist");
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/error.jsp");
+						rd.forward(request, response);
+					}
 				}
 			}
 			else
@@ -118,14 +126,26 @@ public class TaskServlet extends HttpServlet {
 					String date = request.getParameter("due_date");
 					String time = request.getParameter("due_time");
 					String status = request.getParameter("status");
+					
+					//vailidate if this user has the permission to update the task
+					
+					int result = taskService.checkPermission(tasklistId, taskId, user.getUserId());
+					if(result == 1) {
+						request.setAttribute("message", "You only have permission to view and comment on this task");
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/error.jsp");
+						rd.forward(request, response);
+					}
+					else if(result == 0)
+					{
+						taskService.updateTask(tasklistId, taskId, taskTitle, scope, date, time, status);
 
-					taskService.updateTask(tasklistId, taskId, taskTitle, scope, date, time, status);
+						Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
+						request.setAttribute("tasklist", tasklist);
 
-					Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
-					request.setAttribute("tasklist", tasklist);
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/task.jsp");
+						rd.forward(request, response);	
 
-					RequestDispatcher rd = getServletContext().getRequestDispatcher("/task.jsp");
-					rd.forward(request, response);	
+					}
 				}
 				else if(request.getParameter("operation").equalsIgnoreCase("delete"))
 				{

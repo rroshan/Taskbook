@@ -15,4 +15,6 @@ public interface TasklistDAO {
 	public void updateTasklist(Tasklist tasklist);
 	
 	public void deleteTasklist(Tasklist tasklist);
+	
+	public int checkPermission(int tasklistId, String userId);
 }

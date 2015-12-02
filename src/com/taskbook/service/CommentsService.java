@@ -14,7 +14,7 @@ public class CommentsService {
 		Date today = new Date();
 		Comment comment = new Comment();
 		comment.setComment(commentText);
-		comment.setUserId("ROSH01"); //hardcoded for now
+		comment.setUserId(userId);
 		
 		java.sql.Timestamp commentTime = new java.sql.Timestamp(today.getTime());
 		
@@ -29,5 +29,10 @@ public class CommentsService {
 	
 	public ArrayList<Comment> viewAllComments(int taskId) {
 		return dao.viewAllComments(taskId);
+	}
+	
+	public int checkPermission(int commentId, String userId) {
+		
+		return dao.checkPermission(commentId, userId);
 	}
 }

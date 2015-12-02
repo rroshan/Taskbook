@@ -33,7 +33,7 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 			String sql = "select * from tasklist where owner=?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userId);
-			
+
 			set = pstmt.executeQuery();
 
 			while(set.next()){
@@ -180,5 +180,36 @@ public class TasklistDAOMySQLImpl implements TasklistDAO {
 		} finally {
 			ConnectionFactory.closeResources(set, pstmt, conn);
 		}
+	}
+
+	@Override
+	public int checkPermission(int tasklistId, String userId) {
+		// TODO Auto-generated method stub
+		conn = ConnectionFactory.getConnection();
+
+		try {
+			String sql = "select owner from tasklist where tasklist_id=?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, tasklistId);
+			set = pstmt.executeQuery();
+
+			set.next();
+			//Retrieve by column name
+			String owner = set.getString("owner");
+			
+			if(owner.equalsIgnoreCase(userId))
+			{
+				return 1;
+			}
+		} catch(SQLException sqlex) {
+			sqlex.printStackTrace();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			ConnectionFactory.closeResources(set, pstmt, conn);
+		}
+
+		return 0;
 	}
 }

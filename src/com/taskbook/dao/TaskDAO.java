@@ -15,4 +15,6 @@ public interface TaskDAO {
 	public void deleteTask(int taskId);
 	
 	public void updateTask(Task task, int taskListId);
+	
+	public int checkPermission(int tasklistId, int taskid, String userId);
 }

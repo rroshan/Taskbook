@@ -3,6 +3,7 @@ package com.taskbook.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -68,25 +69,46 @@ public class CommentsServlet extends HttpServlet {
 		}
 		else
 		{
-
 			if(operation.equalsIgnoreCase("insert")) {
 
 				String commentText = request.getParameter("commentText");
 
 				commentsService.insertComments(taskId, user.getUserId(), commentText);
-
+				
+				arrComments = commentsService.viewAllComments(taskId);
+				String commentsJson = new Gson().toJson(arrComments);
+				response.getWriter().write(commentsJson);
 			}
 			else if(operation.equalsIgnoreCase("delete")) {
+				//have validation to restrict delete by a different user
 				int commentId = Integer.parseInt(request.getParameter("commentId"));
+				
+				int result = commentsService.checkPermission(commentId, user.getUserId());
+				
+				if(result == 1) {
+					commentsService.deleteComment(commentId);
+					arrComments = commentsService.viewAllComments(taskId);
 
-				commentsService.deleteComment(commentId);
+					String commentsJson = new Gson().toJson(arrComments);
+
+					response.getWriter().write(commentsJson);
+				} else {
+					response.setContentType("application/json");
+					MessageBean msg = new MessageBean();
+					msg.setType("comment_delete");
+					msg.setMessage("Permission");
+					jsonResult = new Gson().toJson(msg);
+					response.getWriter().write(jsonResult);
+				}
 			}
+			else
+			{
+				arrComments = commentsService.viewAllComments(taskId);
 
-			arrComments = commentsService.viewAllComments(taskId);
+				String commentsJson = new Gson().toJson(arrComments);
 
-			String commentsJson = new Gson().toJson(arrComments);
-
-			response.getWriter().write(commentsJson);
+				response.getWriter().write(commentsJson);
+			}
 		}
 	}
 

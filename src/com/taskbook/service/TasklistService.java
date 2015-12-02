@@ -47,4 +47,9 @@ public class TasklistService {
 
 		return completeTaskList;
 	}
+	
+	public int checkPermission(int tasklistId, String userId) {
+		
+		return dao.checkPermission(tasklistId, userId);
+	}
 }
