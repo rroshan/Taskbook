@@ -115,6 +115,32 @@ body.padding2 {
 </head>
 <body class="padding2">
 
+		<div class="bs-component">
+			<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed"
+						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="tasklist.jsp">Home</a>
+				</div>
+				<div class="collapse navbar-collapse"
+					id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li><a href="#">Friends</a></li>
+						<li><a href="book_checkin.jsp">Shared Task</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="logout">Logout</a></li>
+					</ul>
+				</div>
+			</div>
+			</nav>
+		</div>
+
 	<h2>Add a New Friend</h2>
 	<form action=managefriend id="add_friend_form" method="post">
 		Email ID: <input type="text" id="recipient_email" name="recipient_email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required />
