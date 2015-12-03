@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Timestamp {
-	public final static DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+	public final static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	public static java.sql.Timestamp getTimeStamp(String date, String time) {
 		Calendar c = null;
 		Date due_date = null;

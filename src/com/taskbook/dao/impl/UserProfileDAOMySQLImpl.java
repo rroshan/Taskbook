@@ -49,14 +49,17 @@ public class UserProfileDAOMySQLImpl implements UserProfileDAO {
 		conn = ConnectionFactory.getConnection();
 
 		try {
-			String sql = "update user_profile set first_name = ?, last_name = ?, phone_number = ?, address = ? where user_id = ?";
+			String sql = "update user_profile set fname = ?, lname = ?, phone = ?, address = ?, karma_points_total = ?, karma_points_blocked = ? where user_id = ?";
+			
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, userProfile.getFirstName());
 			pstmt.setString(2, userProfile.getLastName());
 			pstmt.setString(3, userProfile.getPhoneNumber());
 			pstmt.setString(4, userProfile.getAddress());
-			pstmt.setString(6, userProfile.getUserId());
+			pstmt.setFloat(5, userProfile.getKarmaPointsTotal());
+			pstmt.setFloat(6, userProfile.getKarmaPointsBlocked());
+			pstmt.setString(7, userProfile.getUserId());
 
 			pstmt.executeUpdate();
 

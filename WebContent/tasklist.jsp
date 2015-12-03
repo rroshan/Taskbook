@@ -85,6 +85,7 @@ body.padding2 {
 					<ul class="nav navbar-nav">
 						<li><a href="friends.jsp">Friends</a></li>
 						<li><a href="sharedtask.jsp">Shared Task</a></li>
+						<li><a href="userProfile">Profile</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="logout">Logout</a></li>

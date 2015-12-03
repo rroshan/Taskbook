@@ -400,6 +400,7 @@ div {
 				<ul class="nav navbar-nav">
 					<li><a href="friends.jsp">Friends</a></li>
 					<li><a href="sharedtask.jsp">Shared Task</a></li>
+					<li><a href="userprofile.jsp">Profile</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="logout">Logout</a></li>

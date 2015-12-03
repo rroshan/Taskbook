@@ -18,6 +18,7 @@ import com.taskbook.bo.Tasklist;
 import com.taskbook.bo.UserProfile;
 import com.taskbook.service.TaskService;
 import com.taskbook.service.TasklistService;
+import com.taskbook.service.UserProfileService;
 
 /**
  * Servlet implementation class TaskServlet
@@ -51,7 +52,7 @@ public class TaskServlet extends HttpServlet {
 		TaskService taskService = new TaskService();
 		String jsonResult;
 		int tasklistId;
-		
+
 		HttpSession session = request.getSession();
 
 		UserProfile user = (UserProfile)session.getAttribute("user");
@@ -92,9 +93,9 @@ public class TaskServlet extends HttpServlet {
 				{
 					String id = request.getParameter("tasklistId");
 					tasklistId = Integer.parseInt(id);
-					
+
 					int result = tasklistService.checkPermission(tasklistId, user.getUserId());
-					
+
 					if(result == 1) {
 						Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
 						request.setAttribute("tasklist", tasklist);
@@ -126,11 +127,12 @@ public class TaskServlet extends HttpServlet {
 					String taskTitle = request.getParameter("title");
 					String scope = request.getParameter("scope");
 					String date = request.getParameter("due_date");
+					
 					String time = request.getParameter("due_time");
 					String status = request.getParameter("status");
-					
+
 					//vailidate if this user has the permission to update the task
-					
+
 					int result = taskService.checkPermission(tasklistId, taskId, user.getUserId());
 					if(result == 1) {
 						request.setAttribute("message", "You only have permission to view and comment on this task");
@@ -142,23 +144,58 @@ public class TaskServlet extends HttpServlet {
 						Date today = new Date();
 						java.sql.Timestamp dueDate = com.taskbook.util.Timestamp.getTimeStamp(date, time);
 						java.sql.Timestamp today_ts = new java.sql.Timestamp(today.getTime());
-						
+
 						Task task = taskService.viewTask(taskId);
+
+						String prevStatus = task.getStatus();
+						String newStatus = status;
+
 						task.setTaskId(taskId);
 						task.setLastModifiedDate(today_ts);
 						task.setDueDate(dueDate);
 						task.setScope(scope);
 						task.setStatus(status);
 						task.setTitle(taskTitle);
-						
+
 						taskService.updateTask(taskId, task);
 
 						Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
+
+						
+						//check if deducting
+						//also have to add points to the helper
+						if(!tasklist.getOwner().equalsIgnoreCase(task.getAssignedUser()))
+						{
+							UserProfile assignedUserProfile;
+							System.out.println("Inside Different");
+							if(!prevStatus.equalsIgnoreCase(newStatus) && newStatus.equalsIgnoreCase("Y")) {
+								System.out.println("Inside Completed Karma Points");
+								user.setKarmaPointsBlocked(user.getKarmaPointsBlocked() - 10);
+								user.setKarmaPointsTotal(user.getKarmaPointsTotal() - 10);
+								UserProfileService userProfileService = new UserProfileService();
+								userProfileService.updateUserProfile(user);
+								
+								assignedUserProfile = userProfileService.viewUserProfile(task.getAssignedUser());
+								assignedUserProfile.setKarmaPointsTotal(assignedUserProfile.getKarmaPointsTotal() + 10);
+								userProfileService.updateUserProfile(assignedUserProfile);
+								
+							} else if(!prevStatus.equalsIgnoreCase(newStatus) && newStatus.equalsIgnoreCase("N")) {
+								System.out.println("Inside Completed Karma Points");
+								user.setKarmaPointsBlocked(user.getKarmaPointsBlocked() + 10);
+								user.setKarmaPointsTotal(user.getKarmaPointsTotal() + 10);
+								UserProfileService userProfileService = new UserProfileService();
+								userProfileService.updateUserProfile(user);
+								
+								assignedUserProfile = userProfileService.viewUserProfile(task.getAssignedUser());
+								assignedUserProfile.setKarmaPointsTotal(assignedUserProfile.getKarmaPointsTotal() - 10);
+								userProfileService.updateUserProfile(assignedUserProfile);
+							}
+						}
+
 						request.setAttribute("tasklist", tasklist);
 
 						RequestDispatcher rd = getServletContext().getRequestDispatcher("/task.jsp");
 						rd.forward(request, response);	
-
 					}
 				}
 				else if(request.getParameter("operation").equalsIgnoreCase("delete"))

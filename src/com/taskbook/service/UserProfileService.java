@@ -31,16 +31,7 @@ public class UserProfileService {
 
 	}
 
-	public void updateUserProfile(String userId, String firstName, String lastName, String phoneNumber, String address) {
-
-		userProfile = new UserProfile();
-
-		userProfile.setUserId(userId);
-		userProfile.setFirstName(firstName);
-		userProfile.setLastName(lastName);
-		userProfile.setPhoneNumber(phoneNumber);
-		userProfile.setAddress(address);
-
+	public void updateUserProfile(UserProfile userProfile) {
 		userProfileDAO.updateUserProfile(userProfile);
 	}
 
@@ -50,30 +41,5 @@ public class UserProfileService {
 		userProfile = userProfileDAO.viewUserProfile(userId);
 
 		return userProfile;
-	}
-
-	public void updateKarmaBalance(int tasklistId, int taskId) {
-
-		userProfile = new UserProfile();
-		Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
-		String owner = tasklist.getOwner();
-
-		Task task = taskService.viewTask(taskId);
-		String assignedUser = task.getAssignedUser();
-		String status = task.getStatus();
-
-		if (!owner.equalsIgnoreCase(assignedUser) && status.equalsIgnoreCase(Constants.COMPLETED)) {
-			int karmaBalance;
-
-			userProfile = viewUserProfile(owner);
-			userProfile.setUserId(owner);
-			userProfile.updateKarmaBalance(-10);
-			userProfileDAO.updateUserProfile(userProfile);
-
-			userProfile = viewUserProfile(assignedUser);
-			userProfile.setUserId(assignedUser);
-			userProfile.updateKarmaBalance(10);
-			userProfileDAO.updateUserProfile(userProfile);
-		}
 	}
 }

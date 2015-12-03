@@ -14,8 +14,12 @@ import javax.servlet.http.HttpSession;
 import com.google.gson.Gson;
 import com.taskbook.bo.CollaborationBO;
 import com.taskbook.bo.MessageBean;
+import com.taskbook.bo.Task;
+import com.taskbook.bo.Tasklist;
 import com.taskbook.bo.UserProfile;
 import com.taskbook.service.CollaborationService;
+import com.taskbook.service.TaskService;
+import com.taskbook.service.TasklistService;
 
 /**
  * Servlet implementation class CollaborationServlet
@@ -23,14 +27,14 @@ import com.taskbook.service.CollaborationService;
 @WebServlet("/CollaborationServlet")
 public class CollaborationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public CollaborationServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public CollaborationServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -48,7 +52,7 @@ public class CollaborationServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 
 		UserProfile user = (UserProfile)session.getAttribute("user");
-		
+
 		MessageBean msg;
 		String jsonResult;
 
@@ -63,14 +67,14 @@ public class CollaborationServlet extends HttpServlet {
 				String title = request.getParameter("title");
 				int taskId = Integer.parseInt(request.getParameter("taskId"));
 				int tasklistId = Integer.parseInt(request.getParameter("tasklistId"));
-				
+
 				CollaborationService collaborationService = new CollaborationService();
 				List<CollaborationBO> collaboratorsList = collaborationService.getCollaboratorsList(user.getUserId(), title);
-				
+
 				request.setAttribute("collaboratorsList", collaboratorsList);
 				request.setAttribute("taskId", taskId);
 				request.setAttribute("tasklistId", tasklistId);
-				
+
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/collaboration.jsp");
 				rd.forward(request, response);
 			}
@@ -82,9 +86,9 @@ public class CollaborationServlet extends HttpServlet {
 					String helperId = request.getParameter("helperEmail");
 					int tasklistId = Integer.parseInt(request.getParameter("tasklistId"));
 					int taskId = Integer.parseInt(request.getParameter("taskId"));
-					
+
 					int result = collaborationService.sendHelpRequest(user.getUserId(), helperId, taskId, tasklistId);
-					
+
 					if(result == 1)
 					{
 						response.setContentType("application/json");
@@ -106,19 +110,43 @@ public class CollaborationServlet extends HttpServlet {
 				}
 				else if(operation.equalsIgnoreCase("accept_help_request")) {
 					String helperId = request.getParameter("receiver");
+					String sender = request.getParameter("sender");
+					String requestor = sender;
 					int taskId = Integer.parseInt(request.getParameter("taskId"));
-					
-					if(user.getUserId().equalsIgnoreCase(helperId)) {
-						collaborationService.acceptHelpRequest(helperId, taskId);
-						
-						RequestDispatcher rd = getServletContext().getRequestDispatcher("/sharedtask.jsp");
-						rd.forward(request, response);
+					int tasklistId = Integer.parseInt(request.getParameter("tasklistId"));
+
+					TasklistService tasklistService = new TasklistService();
+					TaskService taskService = new TaskService();
+					Tasklist taskList = tasklistService.viewTasklist(tasklistId);
+					Task task = taskService.viewTask(taskId);
+
+					if(!task.getAssignedUser().equalsIgnoreCase(taskList.getOwner())) {
+						//assigned user is the logged in user...means he has already accepted the request and accepting again
+						if(task.getAssignedUser().equalsIgnoreCase(user.getUserId())) {
+							request.setAttribute("message", "You have already accepted this request");
+							RequestDispatcher rd = getServletContext().getRequestDispatcher("/error.jsp");
+							rd.forward(request, response);
+						} else {
+							//this has been accepted by someone else already
+							request.setAttribute("message", "This request has been accepted by someone else already");
+							RequestDispatcher rd = getServletContext().getRequestDispatcher("/error.jsp");
+							rd.forward(request, response);
+						}
 					}
 					else
 					{
-						request.setAttribute("message", "This help request is not for you");
-						RequestDispatcher rd = getServletContext().getRequestDispatcher("/error.jsp");
-						rd.forward(request, response);
+						if(user.getUserId().equalsIgnoreCase(helperId)) {
+							collaborationService.acceptHelpRequest(helperId, requestor, taskId);
+
+							RequestDispatcher rd = getServletContext().getRequestDispatcher("/sharedtask.jsp");
+							rd.forward(request, response);
+						}
+						else
+						{
+							request.setAttribute("message", "This help request is not for you");
+							RequestDispatcher rd = getServletContext().getRequestDispatcher("/error.jsp");
+							rd.forward(request, response);
+						}
 					}
 				}
 				else if(operation.equalsIgnoreCase("load_all")) {

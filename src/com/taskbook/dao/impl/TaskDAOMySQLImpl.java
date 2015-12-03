@@ -38,16 +38,16 @@ public class TaskDAOMySQLImpl implements TaskDAO {
 			pstmt.setTimestamp(9, task.getDueDate());
 
 			pstmt.executeUpdate();
-			
+
 			sql = "insert into reminders (task_id, date_time, active) values (LAST_INSERT_ID(), ?, 'Y')";
 			pstmt = conn.prepareStatement(sql);
-			
+
 			long reminderTime = task.getDueDate().getTime() - (60 * 60 * 1000); //subtracting 1 hour from due date
 			Timestamp reminderTs = new Timestamp(reminderTime);
-			
+
 			pstmt.setTimestamp(1, reminderTs);
 			pstmt.executeUpdate();
-			
+
 		} catch(SQLException sqlex) {
 			sqlex.printStackTrace();
 		} catch(Exception ex) {
@@ -151,20 +151,23 @@ public class TaskDAOMySQLImpl implements TaskDAO {
 			pstmt.setInt(7, task.getTaskId());
 
 			pstmt.executeUpdate();
-			
+
+			sql = "update reminders set active=\"N\" where task_id=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, task.getTaskId());
+			pstmt.executeUpdate();
+
+
 			sql = "insert into reminders (task_id, date_time, active) values (?, ?, 'Y')";
 			pstmt = conn.prepareStatement(sql);
-			
+
 			long reminderTime = task.getDueDate().getTime() - (60 * 60 * 1000); //subtracting 1 hour from due date
 			Timestamp reminderTs = new Timestamp(reminderTime);
+
+			pstmt.setInt(1, task.getTaskId());
+			pstmt.setTimestamp(2, reminderTs);
+			pstmt.executeUpdate();
 			
-			Timestamp currentTs = new Timestamp(System.currentTimeMillis());
-			
-			if(currentTs.compareTo(reminderTs) < 0) {
-				pstmt.setInt(1, task.getTaskId());
-				pstmt.setTimestamp(2, reminderTs);
-				pstmt.executeUpdate();
-			}
 		} catch(SQLException sqlex) {
 			sqlex.printStackTrace();
 		} catch(Exception ex) {
@@ -236,25 +239,25 @@ public class TaskDAOMySQLImpl implements TaskDAO {
 			set.next();
 			//Retrieve by column name
 			String owner = set.getString("owner");
-			
+
 			if(owner.equalsIgnoreCase(userId)) {
 				return 0; //updater is the owner
 			}
-			
+
 			sql = "select assigned_user from tasks where tasklist_id=? and task_id=?";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setInt(1, tasklistId);
 			pstmt.setInt(2, taskId);
 			set = pstmt.executeQuery();
-			
+
 			set.next();
 			String assigned_user = set.getString("assigned_user");
-			
+
 			if(assigned_user.equalsIgnoreCase(userId)) {
 				return 1; //updater is the assigned user
 			}
-			
+
 		} catch(SQLException sqlex) {
 			sqlex.printStackTrace();
 		} catch(Exception ex) {

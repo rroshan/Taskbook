@@ -9,6 +9,7 @@ import org.antlr.stringtemplate.language.DefaultTemplateLexer;
 import com.taskbook.bo.CollaboratingTaskBO;
 import com.taskbook.bo.CollaborationBO;
 import com.taskbook.bo.Task;
+import com.taskbook.bo.UserProfile;
 import com.taskbook.dao.CollaborationDAO;
 import com.taskbook.dao.impl.CollaborationDAOMySQLImpl;
 import com.taskbook.mail.SendMail;
@@ -25,6 +26,11 @@ public class CollaborationService {
 	}
 	
 	public int sendHelpRequest(String requestorId, String helperId, int taskId, int tasklistId) {
+		
+		if(userProfileService.viewUserProfile(requestorId).getKarmaBalance() < 10) {
+			return 0;
+		}
+		
 		String recipientFname = userProfileService.viewUserProfile(helperId).getFirstName();
 		String senderFname = userProfileService.viewUserProfile(requestorId).getFirstName();
 		String link = "http://localhost:8080/Taskbook/collaboration";
@@ -49,12 +55,17 @@ public class CollaborationService {
 		return 1;
 	}
 	
-	public void acceptHelpRequest(String helperId, int taskId) {
+	public void acceptHelpRequest(String helperId, String requestor, int taskId) {
 		Task task = taskService.viewTask(taskId);
 		
 		task.setAssignedUser(helperId);
 		
 		taskService.updateTask(taskId, task);
+		
+		UserProfile requestorProfile = userProfileService.viewUserProfile(requestor);
+		requestorProfile.setKarmaPointsBlocked(requestorProfile.getKarmaPointsBlocked() + 10);
+		userProfileService.updateUserProfile(requestorProfile);
+		
 	}
 	
 	public List<CollaboratingTaskBO> viewAllCollaboratingTasks(String userId) {

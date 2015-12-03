@@ -53,20 +53,19 @@ public class UserProfile {
 		return karmaPointsTotal - karmaPointsBlocked;
 	}
 	
-	public void setKarmaPointsTotal(int karmaPointsTotal) {
+	public void setKarmaPointsTotal(float karmaPointsTotal) {
 		this.karmaPointsTotal = karmaPointsTotal;
 	}
 	
-	public void setKarmaPointsBlocked(int karmaPointsBlocked) {
+	public void setKarmaPointsBlocked(float karmaPointsBlocked) {
 		this.karmaPointsBlocked = karmaPointsBlocked;
 	}
 	
-	public void updateKarmaBalance(float points) {
-		if(points < 0) {
-			karmaPointsBlocked = karmaPointsBlocked + points;
-			karmaPointsTotal = karmaPointsTotal + points;	
-		} else {
-			karmaPointsTotal = karmaPointsTotal + points;
-		}
+	public float getKarmaPointsTotal() {
+		return karmaPointsTotal;
+	}
+
+	public float getKarmaPointsBlocked() {
+		return karmaPointsBlocked;
 	}
 }
