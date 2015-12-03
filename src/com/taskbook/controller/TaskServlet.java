@@ -1,6 +1,7 @@
 package com.taskbook.controller;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 import com.taskbook.bo.MessageBean;
+import com.taskbook.bo.Task;
 import com.taskbook.bo.Tasklist;
 import com.taskbook.bo.UserProfile;
 import com.taskbook.service.TaskService;
@@ -137,7 +139,19 @@ public class TaskServlet extends HttpServlet {
 					}
 					else if(result == 0)
 					{
-						taskService.updateTask(tasklistId, taskId, taskTitle, scope, date, time, status);
+						Date today = new Date();
+						java.sql.Timestamp dueDate = com.taskbook.util.Timestamp.getTimeStamp(date, time);
+						java.sql.Timestamp today_ts = new java.sql.Timestamp(today.getTime());
+						
+						Task task = taskService.viewTask(taskId);
+						task.setTaskId(taskId);
+						task.setLastModifiedDate(today_ts);
+						task.setDueDate(dueDate);
+						task.setScope(scope);
+						task.setStatus(status);
+						task.setTitle(taskTitle);
+						
+						taskService.updateTask(taskId, task);
 
 						Tasklist tasklist = tasklistService.viewTasklist(tasklistId);
 						request.setAttribute("tasklist", tasklist);

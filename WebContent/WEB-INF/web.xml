@@ -80,4 +80,14 @@
     <servlet-name>LogoutServlet</servlet-name>
     <url-pattern>/logout</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Collaboration Servlet</display-name>
+    <servlet-name>CollaborationServlet</servlet-name>
+    <servlet-class>com.taskbook.controller.CollaborationServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CollaborationServlet</servlet-name>
+    <url-pattern>/collaboration</url-pattern>
+  </servlet-mapping>
 </web-app>

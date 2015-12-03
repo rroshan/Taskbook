@@ -72,16 +72,15 @@ public class SubtaskDAOMySQLImpl implements SubtaskDAO {
 			Subtask s = null;
 			Map.Entry pair;
 			Iterator it = map.entrySet().iterator();
-			sql = "insert into subtasks values (?,?,?,?)";
+			sql = "insert into subtasks(task_id, status, description) values (?,?,?)";
 			while(it.hasNext()) {
 				pstmt = conn.prepareStatement(sql);
 				pair = (Map.Entry)it.next();
 				
 				s = (Subtask) pair.getValue();
 				pstmt.setInt(1, taskId);
-				pstmt.setInt(2, s.getsNo());
-				pstmt.setString(3, s.getStatus());
-				pstmt.setString(4, s.getDescription());
+				pstmt.setString(2, s.getStatus());
+				pstmt.setString(3, s.getDescription());
 				pstmt.executeUpdate();
 			}
 		} catch(SQLException sqlex) {
@@ -91,8 +90,5 @@ public class SubtaskDAOMySQLImpl implements SubtaskDAO {
 		} finally {
 			ConnectionFactory.closeResources(set, pstmt, conn);
 		}
-		
-		
 	}
-
 }

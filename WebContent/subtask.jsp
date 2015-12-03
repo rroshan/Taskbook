@@ -358,6 +358,27 @@ div {
 		
 		$("#commentbox").val('');
 	}
+	
+	function search_for_help() {
+		var title = $("#inputName").val();
+		var taskId = $("#taskId").val();
+		var tasklistId = $("#tasklistId").val();
+		//validations
+		//public
+		//pending
+		var status = $("#status").val();
+		var scope = $("#scope").val();
+		if(status === 'Y' || scope === 'R')
+		{
+			$("#response_message").empty().append(
+					'<div class="alert alert-dismissible alert-danger">'
+							+ 'Only Public and Pending tasks can be collaborated' + '</div>');
+		}
+		else
+		{
+			window.location = "collaboration?title="+title+"&tasklistId="+tasklistId+"&taskId="+taskId;
+		}
+	}
 </script>
 
 
@@ -378,7 +399,7 @@ div {
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li><a href="friends.jsp">Friends</a></li>
-					<li><a href="book_checkin.jsp">Shared Task</a></li>
+					<li><a href="sharedtask.jsp">Shared Task</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="logout">Logout</a></li>
@@ -406,8 +427,16 @@ div {
 							<label for="scope" class="col-lg-2 control-label">Scope</label>
 							<div class="col-lg-10">
 								<select class="form-control" id="scope" value=${task.scope } name="scope">
-									<option value="R">Private</option>
-									<option value="P">Public</option>
+									<c:choose>
+										<c:when test="${task.scope == 'P' }">
+											<option value="P" selected="selected">Public</option>
+											<option value="R">Private</option>
+										</c:when>
+										<c:when test="${task.scope == 'R' }">
+											<option value="P">Public</option>
+											<option value="R" selected="selected">Private</option>
+										</c:when>
+									</c:choose>
 								</select>
 							</div>
 						</div>
@@ -416,8 +445,16 @@ div {
 							<label for="status" class="col-lg-2 control-label">Status</label>
 							<div class="col-lg-10">
 								<select class="form-control" id="status" value=${task.status } name="status">
-									<option value="N">Pending</option>
-									<option value="Y">Completed</option>
+								<c:choose>
+									<c:when test="${task.status == 'N' }">
+										<option value="N" selected="selected">Pending</option>
+										<option value="Y">Completed</option>
+									</c:when>
+									<c:when test="${task.status == 'Y' }">
+										<option value="N">Pending</option>
+										<option value="Y" selected="selected">Completed</option>
+									</c:when>
+								</c:choose>
 								</select>
 							</div>
 						</div>
@@ -438,8 +475,8 @@ div {
 
 						<div class="form-group">
 							<div class="col-lg-10">
-								<input type="hidden" name="taskId" value="${task.taskId }" />
-								<input type="hidden" name="tasklistId" value="${tasklist.tasklistID}" name="tasklistId"/>
+								<input type="hidden" id="taskId" name="taskId" value="${task.taskId }" />
+								<input type="hidden" id="tasklistId" name="tasklistId" value="${tasklist.tasklistID}" name="tasklistId"/>
 								<input type="hidden" name="operation" value="update" />
 							</div>
 						</div>
@@ -465,6 +502,18 @@ div {
 	<h2>Subtasks</h2>
 	<div id="subtask_list">
 	</div>
+	
+	<br><br><br>
+	<button type="button" class="btn btn-success"
+		onclick="search_for_help()" id="search" name="search">
+		Find Help <span class="glyphicon glyphicon-play"></span>
+	</button> <br>
+	
+	<div class="col-lg-4">
+		<div class="bs-component" id="response_message">
+		
+		</div>
+	</div> <br><br><br><br>
 	
 	<div id='comments-group'>
 	</div>

@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-
 import com.taskbook.bo.Comment;
 import com.taskbook.dao.CommentsDAO;
 import com.taskbook.dao.ConnectionFactory;

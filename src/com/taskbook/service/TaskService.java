@@ -48,24 +48,9 @@ public class TaskService {
 		dao.insertTask(task, tasklistId);
 	}
 	
-	public void updateTask(int tasklistId, int taskId, String taskTitle, String scope, String date, String time, String status)
-	{
-		Date today = new Date();
-		
-		java.sql.Timestamp dueDate = com.taskbook.util.Timestamp.getTimeStamp(date, time);
-		
-		java.sql.Timestamp today_ts = new java.sql.Timestamp(today.getTime());
-		
-		Task task = viewTask(taskId);
-		
-		task.setTaskId(taskId);
-		task.setLastModifiedDate(today_ts);
-		task.setDueDate(dueDate);
-		task.setScope(scope);
-		task.setStatus(status);
-		task.setTitle(taskTitle);
-		
-		dao.updateTask(task, tasklistId);
+	public void updateTask(int taskId, Task task)
+	{	
+		dao.updateTask(task);
 	}
 	
 	public Task viewTask(int taskId)

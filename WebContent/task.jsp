@@ -112,7 +112,7 @@ body.padding2 {
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li><a href="friends.jsp">Friends</a></li>
-					<li><a href="book_checkin.jsp">Shared Task</a></li>
+					<li><a href="sharedtask.jsp">Shared Task</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="logout">Logout</a></li>

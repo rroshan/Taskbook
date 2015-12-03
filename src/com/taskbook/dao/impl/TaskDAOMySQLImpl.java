@@ -38,6 +38,16 @@ public class TaskDAOMySQLImpl implements TaskDAO {
 			pstmt.setTimestamp(9, task.getDueDate());
 
 			pstmt.executeUpdate();
+			
+			sql = "insert into reminders (task_id, date_time, active) values (LAST_INSERT_ID(), ?, 'Y')";
+			pstmt = conn.prepareStatement(sql);
+			
+			long reminderTime = task.getDueDate().getTime() - (60 * 60 * 1000); //subtracting 1 hour from due date
+			Timestamp reminderTs = new Timestamp(reminderTime);
+			
+			pstmt.setTimestamp(1, reminderTs);
+			pstmt.executeUpdate();
+			
 		} catch(SQLException sqlex) {
 			sqlex.printStackTrace();
 		} catch(Exception ex) {
@@ -122,14 +132,14 @@ public class TaskDAOMySQLImpl implements TaskDAO {
 	}
 
 	@Override
-	public void updateTask(Task task, int taskListId) {
+	public void updateTask(Task task) {
 		// TODO Auto-generated method stub
 		//getting database connection from connection pool
 		//connection handled by tomcat
 		conn = ConnectionFactory.getConnection();
 
 		try {
-			String sql = "update tasks set title=?, scope=?, due_date=?, status=?, last_modified_date=? where tasklist_id=? and task_id=?";
+			String sql = "update tasks set title=?, scope=?, due_date=?, status=?, last_modified_date=?, assigned_user=? where task_id=?";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, task.getTitle());
@@ -137,10 +147,24 @@ public class TaskDAOMySQLImpl implements TaskDAO {
 			pstmt.setTimestamp(3, task.getDueDate());
 			pstmt.setString(4, task.getStatus());
 			pstmt.setTimestamp(5, task.getLastModifiedDate());
-			pstmt.setInt(6, taskListId);
+			pstmt.setString(6, task.getAssignedUser());
 			pstmt.setInt(7, task.getTaskId());
 
 			pstmt.executeUpdate();
+			
+			sql = "insert into reminders (task_id, date_time, active) values (?, ?, 'Y')";
+			pstmt = conn.prepareStatement(sql);
+			
+			long reminderTime = task.getDueDate().getTime() - (60 * 60 * 1000); //subtracting 1 hour from due date
+			Timestamp reminderTs = new Timestamp(reminderTime);
+			
+			Timestamp currentTs = new Timestamp(System.currentTimeMillis());
+			
+			if(currentTs.compareTo(reminderTs) < 0) {
+				pstmt.setInt(1, task.getTaskId());
+				pstmt.setTimestamp(2, reminderTs);
+				pstmt.executeUpdate();
+			}
 		} catch(SQLException sqlex) {
 			sqlex.printStackTrace();
 		} catch(Exception ex) {
